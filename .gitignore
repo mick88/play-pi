@@ -4,3 +4,8 @@
 *.db
 local_settings.py
 .idea/
+pip-selfcheck.json
+/django
+/Include
+/Lib
+/Scripts
