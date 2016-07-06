@@ -7,5 +7,10 @@ local_settings.py
 pip-selfcheck.json
 /django
 /Include
+/include
 /Lib
+/lib
 /Scripts
+/bin
+/local
+/share
