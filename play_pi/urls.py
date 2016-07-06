@@ -19,6 +19,6 @@ urlpatterns = patterns('',
 	url(r'^controls/repeat/$', 'play_pi.views.repeat', name='repeat'),
 	url(r'^get_stream/(?P<track_id>\d+)/$', 'play_pi.views.get_stream', name='get_stream'),
 	url(r'^stop/$', 'play_pi.views.stop', name='stop'),
-	url(r'^ajax/(?P<method>\w+)/$', 'play_pi.views.ajax', name='ajax'),
+	url(r'^ajax/(?P<method>\w+)/?$', 'play_pi.views.ajax', name='ajax'),
 	url(r'^admin/', include(admin.site.urls)),
 )
