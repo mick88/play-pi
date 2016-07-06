@@ -185,6 +185,6 @@ def get_client():
 	except:
 		try:
 			client.connect("localhost", 6600)
-		except:
-			print "This is weird."
+		except Exception, e:
+			logger.error(e.message)
 	return client
