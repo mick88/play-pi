@@ -22,6 +22,3 @@ urlpatterns = patterns('',
 	url(r'^ajax/(?P<method>\w+)/$', 'play_pi.views.ajax', name='ajax'),
 	url(r'^admin/', include(admin.site.urls)),
 )
-
-#Startup code here because there does not seem to be a better place
-Track.objects.filter(mpd_id__gt=0).update(mpd_id=0) # we have to reset the MPD_ID because MPD reuses IDs when its restarted.
