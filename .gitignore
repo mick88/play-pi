@@ -14,3 +14,4 @@ pip-selfcheck.json
 /bin
 /local
 /share
+.vagrant/
