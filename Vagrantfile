@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y mpd mpc python-pip screen python-dev
+    apt-get install -y mpd mpc python-pip screen python-dev python-setuptools
     cd /vagrant
     pip install -U setuptools
     pip install -r requirements.txt
