@@ -34,4 +34,4 @@ It's highly recommended you use an [application specific password](https://suppo
 * Setting up a better web server is left as an excercise for the enthusiast. I can personally recommend [gunicorn](http://gunicorn.org/).
 
 ### Migrating from previous version (Django 1.5)
-* run `./manage.py migrate --fake-initial` - this will mark initial migrations as applied nad apply any additional migrations
+* run `./manage.py migrate --fake-initial` - this will mark initial migrations as applied and apply any additional migrations
