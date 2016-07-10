@@ -1,5 +1,20 @@
+from django.contrib.sites.models import Site
 from django.db import models
 
+
+class GoogleCredentials(models.Model):
+	enable = models.BooleanField(blank=True)
+	username = models.EmailField()
+	password = models.CharField(max_length=70)
+	device_id = models.CharField(max_length=16)
+	sites = models.ManyToManyField(Site, related_name='google_credentials')
+
+	def __unicode__(self):
+		return self.username
+
+	class Meta:
+		verbose_name = 'Google Play Music Credentials'
+		verbose_name_plural = 'Google Play Music Credentials'
 
 class Artist(models.Model):
 	name = models.CharField(max_length=200, unique=True)
