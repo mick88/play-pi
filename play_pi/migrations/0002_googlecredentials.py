@@ -4,6 +4,11 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 
 
+def import_credentials(apps, schema_editor):
+    from django.conf import settings
+    GoogleCredentials = apps.get_model('play_pi', 'GoogleCredentials')
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -27,4 +32,5 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Google Play Music Credentials',
             },
         ),
+        migrations.RunPython(import_credentials),
     ]
