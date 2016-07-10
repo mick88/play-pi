@@ -1,13 +1,13 @@
 from django.core.management.base import BaseCommand
 from django.db import connection
-from django.db.models.loading import get_app
+from django.apps import apps
 from play_pi.models import *
 
 class Command(BaseCommand):
     help = 'Initializes the database with your Google Music library'
 
     def handle(self, *args, **options):
-        app = get_app('play_pi')
+        app = apps.get_app_config('play_pi')
         api = app.get_api()
 
         self.stdout.write('Connected to Google Music, downloading data...')

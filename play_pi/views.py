@@ -1,17 +1,16 @@
-import mpd
-from django.db.models.loading import get_app
+import json
+import logging
 
-from django.http import HttpResponseRedirect, HttpResponse
-from django.core.urlresolvers import reverse
+import mpd
+from django.apps import apps
 from django.core.exceptions import *
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-import json
-
 from play_pi.models import *
 from play_pi.settings import SITE_ROOT
 
-import logging
 logger = logging.getLogger('play_pi')
 
 client = mpd.MPDClient()
@@ -152,7 +151,7 @@ def get_currently_playing_track():
 		return {}
 
 def get_gplay_url(stream_id):
-	app = get_app('play_pi')
+	app = apps.get_app_config('play_pi')
 	api = app.get_api()
 	return api.get_stream_url(stream_id, app.get_credentials().device_id)
 
