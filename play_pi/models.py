@@ -3,7 +3,7 @@ from django.db import models
 
 
 class GoogleCredentials(models.Model):
-	enable = models.BooleanField(blank=True)
+	enable = models.BooleanField(blank=True, default=True)
 	username = models.EmailField()
 	password = models.CharField(max_length=70)
 	device_id = models.CharField(max_length=16)
