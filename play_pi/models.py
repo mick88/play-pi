@@ -1,6 +1,12 @@
 from django.contrib.sites.models import Site
 from django.db import models
+from django.db.models import QuerySet
 
+
+class CredentialsQuerySet(QuerySet):
+	def enabled(self):
+		site = Site.objects.get_current()
+		return site.google_credentials.filter(enable=True)
 
 class GoogleCredentials(models.Model):
 	enable = models.BooleanField(blank=True, default=True)
@@ -8,6 +14,8 @@ class GoogleCredentials(models.Model):
 	password = models.CharField(max_length=70)
 	device_id = models.CharField(max_length=16)
 	sites = models.ManyToManyField(Site, related_name='google_credentials')
+
+	objects = CredentialsQuerySet.as_manager()
 
 	def __unicode__(self):
 		return self.username

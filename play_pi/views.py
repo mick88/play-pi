@@ -1,6 +1,5 @@
-from gmusicapi import Mobileclient
 import mpd
-from django.core.cache import cache
+from django.db.models.loading import get_app
 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -10,19 +9,16 @@ from django.template import RequestContext
 import json
 
 from play_pi.models import *
-from play_pi.settings import GPLAY_USER, GPLAY_PASS, SITE_ROOT, DEVICE_ID
+from play_pi.settings import SITE_ROOT
 
 import logging
 logger = logging.getLogger('play_pi')
-
-api = Mobileclient()
-api.login(GPLAY_USER,GPLAY_PASS,DEVICE_ID)
 
 client = mpd.MPDClient()
 client.connect("localhost", 6600)
 
 def home(request):
-	if GPLAY_USER == "" or GPLAY_PASS == "":
+	if not GoogleCredentials.objects.enabled().exists():
 		return render_to_response('error.html', context_instance=RequestContext(request))
 	artists = Artist.objects.all().order_by('name')
 	return render_to_response('index.html',
@@ -156,13 +152,9 @@ def get_currently_playing_track():
 		return {}
 
 def get_gplay_url(stream_id):
-	global api
-        try:
-	  url = api.get_stream_url(stream_id,DEVICE_ID)
-        except:
-          api.login(GPLAY_USER,GPLAY_PASS,DEVICE_ID)
-          url = api.get_stream_url(stream_id,DEVICE_ID)
-	return url
+	app = get_app('play_pi')
+	api = app.get_api()
+	return api.get_stream_url(stream_id, app.get_credentials().device_id)
 
 def mpd_play(tracks):
 	client = get_client()

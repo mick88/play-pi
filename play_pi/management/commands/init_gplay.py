@@ -1,21 +1,14 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.db import connection
-from gmusicapi import Mobileclient, Webclient
-from play_pi.settings import GPLAY_USER, GPLAY_PASS, DEVICE_ID
+from django.db.models.loading import get_app
 from play_pi.models import *
 
 class Command(BaseCommand):
     help = 'Initializes the database with your Google Music library'
 
     def handle(self, *args, **options):
-        if GPLAY_PASS == "" or GPLAY_USER == "":
-            self.stdout.write('Credentials not set up. Please edit settings.py')
-            return
-
-        api = Mobileclient()
-        if not api.login(GPLAY_USER,GPLAY_PASS,DEVICE_ID):
-            self.stdout.write('Incorrect credentials, login failed')
-            return
+        app = get_app('play_pi')
+        api = app.get_api()
 
         self.stdout.write('Connected to Google Music, downloading data...')
         #library = []
