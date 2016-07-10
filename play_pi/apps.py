@@ -5,7 +5,7 @@ from django.apps.config import AppConfig
 
 class PlayPiApp(AppConfig):
     name = 'play_pi'
-    label = 'PlayPi'
+    label = 'play_pi'
     verbose_name = 'Play Pi'
 
     def ready(self):
