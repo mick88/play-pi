@@ -9,7 +9,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from play_pi.models import *
-from play_pi.settings import SITE_ROOT
 
 logger = logging.getLogger('play_pi')
 
@@ -162,8 +161,9 @@ def mpd_play(tracks):
           try:
             client.clear()
             for track in tracks:
-              track.mpd_id = client.addid(SITE_ROOT + reverse('get_stream',args=[track.id,]))
-              track.save()
+				site = Site.objects.get_current()
+				track.mpd_id = client.addid(site.domain + reverse('get_stream',args=[track.id,]))
+				track.save()
             client.play()
             success = True
           except:

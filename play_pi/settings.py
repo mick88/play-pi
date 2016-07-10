@@ -9,7 +9,6 @@ TEMPLATE_DEBUG = DEBUG
 GPLAY_USER = "" # Define these in local_settings.py, not here
 GPLAY_PASS = "" # Define these in local_settings.py, not here
 DEVICE_ID = "" # Define these in local_settings.py, not here
-SITE_ROOT = "http://0.0.0.0:80" # If you serve from a different port, change this
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__)) + '/..'
 
