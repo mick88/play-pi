@@ -13,6 +13,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
     apt-get install -y mpd mpc python-pip screen python-dev python-setuptools libffi-dev
+    echo "snd-bcm2835" >> /etc/modules
     cd /vagrant
     pip install -U setuptools
     pip install -r requirements.txt
