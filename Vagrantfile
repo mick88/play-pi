@@ -3,8 +3,8 @@
 
 Vagrant.configure("2") do |config|
   config.ssh.forward_x11 = true # useful since some audio testing programs use x11
-  config.vm.box = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.ssh.forward_agent = true
+  config.vm.box = "ubuntu/trusty64"
   config.vm.network "forwarded_port", guest: 8000, host: 8000
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "512"
@@ -22,27 +22,13 @@ Vagrant.configure("2") do |config|
 end
 
 $BOOTSTRAP_SCRIPT = <<EOF
-  set -e # Stop on any error
-
-  # --------------- SETTINGS ----------------
-  # Other settings
-  export DEBIAN_FRONTEND=noninteractive
-
   sudo apt-get update
+  sudo apt-get install -y dkms
 
-  # ---- OSS AUDIO
+  wget http://ppa.launchpad.net/ubuntu-audio-dev/alsa-daily/ubuntu/pool/main/o/oem-audio-hda-daily-dkms/oem-audio-hda-daily-dkms_0.201509251532~ubuntu14.04.1_all.deb
+  sudo dpkg -i oem-audio-hda-daily-dkms_0.201509251532~ubuntu14.04.1_all.deb
+  rm oem-audio-hda-daily-dkms_0.201509251532~ubuntu14.04.1_all.deb
+  sudo apt-get -y install python-dev ipython python-numpy python-matplotlib python-scipy cython alsa-utils paman
   sudo usermod -a -G audio vagrant
-  sudo apt-get install -y oss4-base oss4-dkms oss4-source oss4-gtk linux-headers-3.2.0-23 debconf-utils
-  sudo ln -s /usr/src/linux-headers-$(uname -r)/ /lib/modules/$(uname -r)/source || echo ALREADY SYMLINKED
-  sudo module-assistant prepare
-  sudo module-assistant auto-install -i oss4 # this can take 2 minutes
-  sudo debconf-set-selections <<< "linux-sound-base linux-sound-base/sound_system select  OSS"
-  echo READY.
-
-  # have to reboot for drivers to kick in, but only the first time of course
-  if [ ! -f ~/runonce ]
-  then
-    sudo reboot
-    touch ~/runonce
-  fi
+  reboot
 EOF
