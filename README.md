@@ -18,6 +18,7 @@ There are [futher instructions for setting up/testing mpc](http://www.gmpa.it/it
 * First, you'll need to update `pip`'s setuptools: `sudo pip install -U setuptools`
 * Next you'll need to use it to install the required python packages:
 `sudo pip install -r requirements.txt`
+* Create admin account with `./manage.py createsuperuser`
 * Create a file called `local_settings.py` in the same folder as `settings.py`. Add the following lines:
 `GPLAY_USER="you@gmail.com"`  
 `GPLAY_PASS="your-password"`  
