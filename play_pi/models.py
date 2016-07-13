@@ -82,3 +82,11 @@ class PlaylistConnection(models.Model):
 			track=self.track,
 			playlist=self.playlist,
 		)
+
+
+class RadioStation(models.Model):
+	name = models.CharField(max_length=70)
+	url = models.URLField()
+
+	def __unicode__(self):
+		return self.name
