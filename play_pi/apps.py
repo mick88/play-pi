@@ -27,5 +27,7 @@ class PlayPiApp(AppConfig):
             from gmusicapi import Mobileclient
             self.api = Mobileclient()
             credentials = self.get_credentials()
-            self.api.login(credentials.username, credentials.password, credentials.device_id)
+            login = self.api.login(credentials.username, credentials.password, credentials.device_id)
+            if not login:
+                raise Exception('Login error')
         return self.api
