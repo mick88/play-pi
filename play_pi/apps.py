@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.apps.config import AppConfig
+from django.db.utils import OperationalError
 
 
 class PlayPiApp(AppConfig):
@@ -11,4 +12,8 @@ class PlayPiApp(AppConfig):
     def ready(self):
         super(PlayPiApp, self).ready()
         Track = self.get_model('Track')
-        Track.objects.filter(mpd_id__gt=0).update(mpd_id=0)
+        try:
+            Track.objects.filter(mpd_id__gt=0).update(mpd_id=0)
+        except OperationalError:
+            # Will happen if migrations have not ran yet
+            pass
