@@ -7,6 +7,7 @@ from django.http.response import Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.views.generic import View
+from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from play_pi.models import *
@@ -34,12 +35,16 @@ class AlbumListView(BaseGridView):
 	model = Album
 
 
-def artist(request,artist_id):
-	artist = Artist.objects.get(id=artist_id)
-	albums = Album.objects.filter(artist=artist)
-	return render_to_response('grid.html',
-		{'list': albums, 'view':'album', 'artist': artist},
-		context_instance=RequestContext(request))
+class ArtistView(DetailView):
+	pk_url_kwarg = 'artist_id'
+	model = Artist
+	template_name = 'grid.html'
+
+	def get_context_data(self, **kwargs):
+		data = super(ArtistView, self).get_context_data(**kwargs)
+		data['list'] = Album.objects.filter(artist=self.object)
+		data['view'] = 'album'
+		return data
 
 
 class PlaylistListView(BaseGridView):
