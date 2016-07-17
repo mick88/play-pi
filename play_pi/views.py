@@ -89,7 +89,7 @@ def play_track(request,track_id):
 
 def play_radio(request, radio_id):
 	station = RadioStation.objects.get(id=radio_id)
-	mpd_play([station, ])
+	mpd_play_radio(station)
 	return HttpResponseRedirect(reverse('radios'))
 
 
@@ -138,7 +138,7 @@ def ajax(request,method):
 			return HttpResponse(json.dumps({}), 'application/javascript')
 		data = {'title': track.name, 'album':track.album.name, 'artist': track.artist.name, 'state': client.status()['state']}
 		return HttpResponse(json.dumps(data), 'application/javascript')
-	
+
 	return_data = client.status()
 	return HttpResponse(json.dumps(return_data), 'application/javascript')
 
@@ -152,7 +152,7 @@ def get_currently_playing_track():
 		mpd_id = int(status['songid'])
 	except:
 		return {}
-		
+
 	if mpd_id == 0:
 		 return {}
 
@@ -181,6 +181,13 @@ def mpd_play(tracks):
             success = True
           except:
             pass
+
+def mpd_play_radio(station):
+	client = get_client()
+	client.clear()
+	client.add(station.url)
+	station.save()
+	client.play()
 
 def get_client():
 	global client
