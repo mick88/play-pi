@@ -8,6 +8,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.generic.list import ListView
+
 from play_pi.models import *
 
 logger = logging.getLogger('play_pi')
@@ -84,6 +86,13 @@ def play_track(request,track_id):
 	mpd_play([track,])
 	return HttpResponseRedirect(reverse('album',args=[track.album.id,]))
 
+
+def play_radio(request, radio_id):
+	station = RadioStation.objects.get(id=radio_id)
+	mpd_play_radio(station)
+	return HttpResponseRedirect(reverse('radios'))
+
+
 def stop(request):
 	client = get_client()
 	try:
@@ -125,13 +134,20 @@ def ajax(request,method):
 		client.previous()
 	elif method == 'current_song':
 		track = get_currently_playing_track()
-		if track == {}:
-			return HttpResponse(json.dumps({}), 'application/javascript')
-		data = {'title': track.name, 'album':track.album.name, 'artist': track.artist.name, 'state': client.status()['state']}
+		if isinstance(track, Track):
+			data = {'title': track.name, 'album': track.album.name, 'artist': track.artist.name, 'state': client.status()['state']}
+		elif isinstance(track, RadioStation):
+			data = {'title': track.name, 'album': '', 'artist': '', 'state': client.status()['state']}
+		else:
+			data = {}
 		return HttpResponse(json.dumps(data), 'application/javascript')
-	
+
 	return_data = client.status()
 	return HttpResponse(json.dumps(return_data), 'application/javascript')
+
+class RadioStationListView(ListView):
+	model = RadioStation
+	template_name = 'radio_list.html'
 
 def get_currently_playing_track():
 	status = get_client().status()
@@ -139,13 +155,15 @@ def get_currently_playing_track():
 		mpd_id = int(status['songid'])
 	except:
 		return {}
-		
+
 	if mpd_id == 0:
 		 return {}
 
 	try:
 		track = Track.objects.get(mpd_id=mpd_id)
 		return track
+	except Track.DoesNotExist:
+		return RadioStation.objects.get(mpd_id=mpd_id)
 	except MultipleObjectsReturned:
 		return {}
 
@@ -168,6 +186,14 @@ def mpd_play(tracks):
             success = True
           except:
             pass
+
+def mpd_play_radio(station):
+	client = get_client()
+	client.clear()
+	mpd_id = client.addid(station.url)
+	station.mpd_id = mpd_id
+	station.save()
+	client.play()
 
 def get_client():
 	global client

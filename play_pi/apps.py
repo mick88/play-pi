@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.apps.config import AppConfig
-from play_pi.models import GoogleCredentials
+from play_pi.models import GoogleCredentials, RadioStation
 from django.db.utils import OperationalError
 
 
@@ -15,6 +15,7 @@ class PlayPiApp(AppConfig):
         Track = self.get_model('Track')
         try:
             Track.objects.filter(mpd_id__gt=0).update(mpd_id=0)
+            RadioStation.objects.filter(mpd_id__gt=0).update(mpd_id=0)
         except OperationalError:
             # Will happen if migrations have not ran yet
             pass
