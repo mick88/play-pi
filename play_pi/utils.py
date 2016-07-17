@@ -38,10 +38,7 @@ def get_client():
     try:
         client.status()
     except:
-        try:
-            client.connect("localhost", 6600)
-        except Exception, e:
-            logger.error(e.message)
+        client.connect("localhost", 6600)
     return client
 
 
