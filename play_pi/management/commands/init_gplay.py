@@ -13,7 +13,6 @@ class Command(BaseCommand):
         api = app.get_api()
 
         self.stdout.write('Connected to Google Music, downloading data...')
-        #library = []
         library = api.get_all_songs()
         self.stdout.write('Data downloaded!')
         self.stdout.write('Clearing DB...')
@@ -27,13 +26,13 @@ class Command(BaseCommand):
         self.stdout.write('Parsing new data...')
 
         # Easier to keep track of who we've seen like this...
-        artists = []
-        albums = []
+        artists = set()
+        albums = set()
         count = len(library)
         self.stdout.write(str(count) + ' tracks found')
         i = 0
         for song in library:
-            i = i + 1
+            i += 1
             track = Track()
 
             if song['albumArtist'] == "":
@@ -53,7 +52,7 @@ class Command(BaseCommand):
                 except:
                     print "No Art found."
                 artist.save()
-                artists.append(a)
+                artists.add(a)
                 self.stdout.write('Added artist: ' + a)
                 self.stdout.write(str(i) + '/' + str(count) + ' tracks completed')
             else:
@@ -74,7 +73,7 @@ class Command(BaseCommand):
                 except:
                     print "No Art found."
                 album.save()
-                albums.append(song['album'] + a)
+                albums.add(song['album'] + a)
             else:
                 album = Album.objects.get(name=song['album'], artist=artist)
             track.album = album
@@ -89,10 +88,7 @@ class Command(BaseCommand):
 
         self.stdout.write('All tracks saved!')
         self.stdout.write('Getting Playlists...')
-        
-        self.stdout.write('Saving playlists...')
 
-        self.stdout.write('Getting playlist contents.')
         playlists = api.get_all_user_playlist_contents()
         for playlist in playlists:
             p = Playlist()
