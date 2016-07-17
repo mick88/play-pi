@@ -8,6 +8,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.generic.list import ListView
+
 from play_pi.models import *
 
 logger = logging.getLogger('play_pi')
@@ -132,6 +134,10 @@ def ajax(request,method):
 	
 	return_data = client.status()
 	return HttpResponse(json.dumps(return_data), 'application/javascript')
+
+class RadioStationListView(ListView):
+	model = RadioStation
+	template_name = 'radio_list.html'
 
 def get_currently_playing_track():
 	status = get_client().status()

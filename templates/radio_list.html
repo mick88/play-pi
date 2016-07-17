@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block jquery %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Radio Stations</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <img src='/static/img/banner.png' class='album-image' alt=''/>
+        </div>
+        <div class="col-md-9">
+            <table class="table table-striped album-table">
+                <tr>
+                    <th class='play-col'></th>
+                    <th>Name</th>
+                </tr>
+                {% for station in radiostation_list %}
+                    <tr>
+                        <td class='play-col'><a href='#'>▶</a></td>
+                        <td>{{ station.name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}
