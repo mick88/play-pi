@@ -20,5 +20,17 @@
                 href='{% url "repeat" %}' id='repeat-button'>
             <i class='glyphicon glyphicon-repeat icon-white'></i>
         </button>
+        <button type="button" class="btn btn-default" id='volume-button'>
+            <i class='glyphicon glyphicon-volume-up icon-white'></i>
+            <input id="volume-slider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="{{ mpd_status.volume }}"/>
+        </button>
     </div>
 </div>
+
+<script language="JavaScript">
+$('#volume-slider').slider({
+	formatter: function(value) {
+		return 'Volume: ' + value;
+	}
+});
+</script>
