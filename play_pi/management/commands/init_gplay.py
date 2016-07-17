@@ -1,11 +1,13 @@
 from django.core.management.base import BaseCommand
-from django.db import connection
+from django.db import connection, transaction
 from django.apps import apps
 from play_pi.models import *
+
 
 class Command(BaseCommand):
     help = 'Initializes the database with your Google Music library'
 
+    @transaction.atomic()
     def handle(self, *args, **options):
         app = apps.get_app_config('play_pi')
         api = app.get_api()
