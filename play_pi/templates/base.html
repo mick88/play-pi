@@ -146,20 +146,7 @@ $(document).ready(function() {
       </div>
     </div>
     <div class="row">
-      <div class="col-md-offset-5 col-md-3" style=" margin: 0 auto; text-align: center; float:none;">
-        <div class="btn-group">
-          <button type="button" class="btn btn-default" href="#" id="previous-button"><i class='glyphicon glyphicon-backward'></i></button>
-          <button type="button" class="btn btn-success" href="#" id="play-button"> <i class='glyphicon glyphicon-play icon-white'></i></button>
-          <button type="button" class="btn btn-primary"  href="#" id="pause-button"><i class='glyphicon glyphicon-pause icon-white'></i></button>
-          <button type="button" class="btn btn-default" href="#" id="next-button"><i class='glyphicon glyphicon-forward icon-white'></i></button>
-          <button type="button" class="btn {% if mpd_status.random == '1' %}btn-highlight{% endif %} btn-default" href='{% url "random" %}' id='random-button'>
-              <i class='glyphicon glyphicon-random icon-white'></i>
-          </button>
-          <button type="button" class="btn {% if mpd_status.repeat == '1' %}btn-highlight{% endif %} btn-default" href='{% url "repeat" %}' id='repeat-button'>
-              <i class='glyphicon glyphicon-repeat icon-white'></i>
-          </button>
-        </div>
-      </div>
+      {% include 'playback_controls.html' %}
     </div>
     <div class="row">
       <div class="col-md-offset-8 col-md-4">
