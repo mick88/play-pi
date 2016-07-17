@@ -115,7 +115,8 @@ def repeat(request):
 	logger.debug(status)
 	return HttpResponseRedirect(reverse('home'))
 
-def ajax(request,method):
+
+def ajax(request, method, value=None):
 	client = get_client()
 	status = client.status()
 	if method == 'random':
@@ -132,6 +133,9 @@ def ajax(request,method):
 		client.next()
 	elif method == 'previous':
 		client.previous()
+	elif method == 'volume':
+		volume = int(value)
+		client.setvol(volume)
 	elif method == 'current_song':
 		track = get_currently_playing_track()
 		if isinstance(track, Track):
@@ -163,7 +167,10 @@ def get_currently_playing_track():
 		track = Track.objects.get(mpd_id=mpd_id)
 		return track
 	except Track.DoesNotExist:
-		return RadioStation.objects.get(mpd_id=mpd_id)
+		try:
+			return RadioStation.objects.get(mpd_id=mpd_id)
+		except RadioStation.DoesNotExist:
+			return {}
 	except MultipleObjectsReturned:
 		return {}
 

@@ -33,4 +33,8 @@ $('#volume-slider').slider({
 		return 'Volume: ' + value;
 	}
 });
+$('#volume-slider').on('slide', function (event) {
+    var volume = event.value;
+    $.get('/ajax/volume/' + volume);
+});
 </script>
