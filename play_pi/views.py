@@ -15,30 +15,34 @@ from play_pi.utils import get_client, mpd_play, get_gplay_url, mpd_play_radio, g
 logger = logging.getLogger(__name__)
 
 
-def home(request):
-	if not GoogleCredentials.objects.enabled().exists():
-		return render_to_response('error.html', context_instance=RequestContext(request))
-	artists = Artist.objects.all().order_by('name')
-	return render_to_response('index.html',
-		{'list': artists, 'view':'artist'},
-		context_instance=RequestContext(request))
+class ArtistListView(ListView):
+	model = Artist
+	ordering = 'name',
+	context_object_name = 'list'
+	template_name = 'grid.html'
+
+	def dispatch(self, request, *args, **kwargs):
+		if not GoogleCredentials.objects.enabled().exists():
+			return render_to_response('error.html', context_instance=RequestContext(request))
+		return super(ArtistListView, self).dispatch(request, *args, **kwargs)
+
 
 def albums(request):
 	albums = Album.objects.all().order_by('name')
-	return render_to_response('index.html',
+	return render_to_response('grid.html',
 		{'list': albums, 'view':'album'},
 		context_instance=RequestContext(request))
 
 def artist(request,artist_id):
 	artist = Artist.objects.get(id=artist_id)
 	albums = Album.objects.filter(artist=artist)
-	return render_to_response('index.html',
+	return render_to_response('grid.html',
 		{'list': albums, 'view':'album', 'artist': artist},
 		context_instance=RequestContext(request))
 
 def playlists(request):
 	playlists = Playlist.objects.all()
-	return render_to_response('index.html',
+	return render_to_response('grid.html',
 		{'list': playlists, 'view':'playlist'},
 		context_instance=RequestContext(request))
 
