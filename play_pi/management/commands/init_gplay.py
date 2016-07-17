@@ -7,15 +7,8 @@ from play_pi.models import *
 class Command(BaseCommand):
     help = 'Initializes the database with your Google Music library'
 
-    @transaction.atomic()
-    def handle(self, *args, **options):
-        app = apps.get_app_config('play_pi')
-        api = app.get_api()
-
-        self.stdout.write('Connected to Google Music, downloading data...')
-        library = api.get_all_songs()
-        self.stdout.write('Data downloaded!')
-        self.stdout.write('Clearing DB...')
+    def delete_entries(self):
+        self.stdout.write('Clearing DB... ', ending='')
         cursor = connection.cursor()
         # This can take a long time using ORM commands on the Pi, so lets Truncate
         cursor.execute('DELETE FROM ' + Track._meta.db_table)
@@ -23,13 +16,14 @@ class Command(BaseCommand):
         cursor.execute('DELETE FROM ' + Artist._meta.db_table)
         cursor.execute('DELETE FROM ' + Playlist._meta.db_table)
         cursor.execute('DELETE FROM ' + PlaylistConnection._meta.db_table)
-        self.stdout.write('Parsing new data...')
+        self.stdout.write('done')
 
+    def import_tracks(self, library):
         # Easier to keep track of who we've seen like this...
         artists = set()
         albums = set()
         count = len(library)
-        self.stdout.write(str(count) + ' tracks found')
+        self.stdout.write('Downloading {} tracks...'.format(count))
         i = 0
         created_tracks = []
         for song in library:
@@ -59,7 +53,7 @@ class Command(BaseCommand):
                     art_url = ''
                 album = Album(
                     name=album_name,
-                    artist = artist,
+                    artist=artist,
                     year=song.get('year', 0),
                     art_url=art_url,
                 )
@@ -78,14 +72,17 @@ class Command(BaseCommand):
             )
             created_tracks.append(track)
             self.stdout.write(u'{}/{} tracks saved'.format(i, count), ending='\r')
+            # self.stdout.write(u'{}/{} tracks saved'.format(i, count), ending='\r')
+        self.stdout.write('')
         Track.objects.bulk_create(created_tracks)
-        self.stdout.write('Getting Playlists...')
+        return created_tracks
 
-        playlists = api.get_all_user_playlist_contents()
+    def import_playlists(self, playlists):
+        self.stdout.write('Importing Playlists...', ending='')
         for playlist in playlists:
             p = Playlist.objects.create(
                 pid=playlist['id'],
-                name = playlist['name'],
+                name=playlist['name'],
             )
             connections = []
             for entry in playlist['tracks']:
@@ -93,12 +90,28 @@ class Command(BaseCommand):
                     track = Track.objects.get(stream_id=entry['trackId'])
                     playlist_connection = PlaylistConnection(
                         playlist=p,
-                        track = track,
+                        track=track,
                     )
                     connections.append(playlist_connection)
                 except Exception as e:
                     self.stderr.write(e.message)
 
             PlaylistConnection.objects.bulk_create(connections)
+        self.stdout.write('done')
 
-        self.stdout.write('Library saved!')
+    @transaction.atomic()
+    def handle(self, *args, **options):
+        app = apps.get_app_config('play_pi')
+        api = app.get_api()
+
+        self.stdout.write('Connected to Google Music, downloading data...', ending='')
+        songs = api.get_all_songs()
+        playlists = api.get_all_user_playlist_contents()
+        self.stdout.write('done')
+
+        self.delete_entries()
+        self.import_tracks(songs)
+        self.import_playlists(playlists)
+
+
+
