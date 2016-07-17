@@ -1,17 +1,18 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+
 from play_pi.models import *
-from play_pi.views import RadioStationListView, AjaxView, ArtistListView
+from play_pi.views import RadioStationListView, AjaxView, ArtistListView, AlbumListView, PlaylistListView
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
 	url(r'^$', ArtistListView.as_view(), name='home'),
-	url(r'^albums/$', 'play_pi.views.albums', name='albums'),
+	url(r'^albums/$', AlbumListView.as_view(), name='albums'),
 	url(r'^artist/(?P<artist_id>\d+)/$', 'play_pi.views.artist', name='artist'),
 	url(r'^album/(?P<album_id>\d+)/$', 'play_pi.views.album', name='album'),
 	url(r'^radio/$', RadioStationListView.as_view(), name='radios'),
-	url(r'^playlists/$', 'play_pi.views.playlists', name='playlists'),
+	url(r'^playlists/$', PlaylistListView.as_view(), name='playlists'),
 	url(r'^playlist/(?P<playlist_id>\d+)/$', 'play_pi.views.playlist', name='playlist'),
 	url(r'^play/track/(?P<track_id>\d+)/$', 'play_pi.views.play_track', name='play_track'),
 	url(r'^play/radio/(?P<radio_id>\d+)/$', 'play_pi.views.play_radio', name='play_radio'),
