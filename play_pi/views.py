@@ -86,6 +86,13 @@ def play_track(request,track_id):
 	mpd_play([track,])
 	return HttpResponseRedirect(reverse('album',args=[track.album.id,]))
 
+
+def play_radio(request, radio_id):
+	station = RadioStation.objects.get(id=radio_id)
+	mpd_play([station, ])
+	return HttpResponseRedirect(reverse('radios'))
+
+
 def stop(request):
 	client = get_client()
 	try:
