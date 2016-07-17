@@ -134,9 +134,12 @@ def ajax(request,method):
 		client.previous()
 	elif method == 'current_song':
 		track = get_currently_playing_track()
-		if track == {}:
-			return HttpResponse(json.dumps({}), 'application/javascript')
-		data = {'title': track.name, 'album':track.album.name, 'artist': track.artist.name, 'state': client.status()['state']}
+		if isinstance(track, Track):
+			data = {'title': track.name, 'album': track.album.name, 'artist': track.artist.name, 'state': client.status()['state']}
+		elif isinstance(track, RadioStation):
+			data = {'title': track.name, 'album': '', 'artist': '', 'state': client.status()['state']}
+		else:
+			data = {}
 		return HttpResponse(json.dumps(data), 'application/javascript')
 
 	return_data = client.status()
@@ -159,6 +162,8 @@ def get_currently_playing_track():
 	try:
 		track = Track.objects.get(mpd_id=mpd_id)
 		return track
+	except Track.DoesNotExist:
+		return RadioStation.objects.get(mpd_id=mpd_id)
 	except MultipleObjectsReturned:
 		return {}
 
@@ -185,7 +190,8 @@ def mpd_play(tracks):
 def mpd_play_radio(station):
 	client = get_client()
 	client.clear()
-	client.add(station.url)
+	mpd_id = client.addid(station.url)
+	station.mpd_id = mpd_id
 	station.save()
 	client.play()
 
