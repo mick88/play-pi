@@ -1,4 +1,5 @@
 from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import QuerySet
 
@@ -28,6 +29,9 @@ class Artist(models.Model):
 	name = models.CharField(max_length=200, unique=True)
 	art_url = models.CharField(max_length=200)
 
+	def get_absolute_url(self):
+		return reverse('artist', args=[self.id])
+
 	def __unicode__(self):
 		return self.name
 
@@ -37,6 +41,9 @@ class Album(models.Model):
 	artist = models.ForeignKey(Artist)
 	year = models.IntegerField(default=0)
 	art_url = models.CharField(max_length=200)
+
+	def get_absolute_url(self):
+		return reverse('album', args=[self.id])
 
 	def __unicode__(self):
 		return self.name
@@ -63,6 +70,9 @@ class Playlist(models.Model):
 
 	def __unicode__(self):
 		return self.name
+
+	def get_absolute_url(self):
+		return reverse('playlist', args=[self.id])
 
 	def get_art(self):
 		pc = PlaylistConnection.objects.filter(playlist=self)[0]
