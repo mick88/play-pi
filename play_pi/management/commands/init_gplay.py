@@ -31,78 +31,79 @@ class Command(BaseCommand):
         count = len(library)
         self.stdout.write(str(count) + ' tracks found')
         i = 0
+        created_tracks = []
         for song in library:
             i += 1
-            track = Track()
 
-            if song['albumArtist'] == "":
-                if song['artist'] == "":
-                    a = "Unknown Artist"
-                else:
-                    a = song['artist']
+            artist_name = song['artist'] or song['albumArtist'] or "Unknown Artist"
+
+            if artist_name not in artists:
+                try:
+                    art_url = song['artistArtRef'][0]['url']
+                except:
+                    art_url = ''
+                    self.stderr.write(u"No artist art found for {}".format(artist_name))
+                artist = Artist.objects.create(
+                    name=artist_name,
+                    art_url=art_url,
+                )
+
+                artists.add(artist_name)
+                self.stdout.write(u'Added artist: {}'.format(artist))
+                self.stdout.write(u'{}/{} tracks completed'.format(i, count))
             else:
-                a = song['albumArtist']
+                artist = Artist.objects.get(name=artist_name)
 
-            if a not in artists:
-                artist = Artist()
-                artist.name = a
-
+            album_name = song['album']
+            if (album_name, artist_name) not in albums:
                 try:
-                    artist.art_url = song['artistArtRef'][0]['url']
+                    art_url = song['albumArtRef'][0]['url']
                 except:
-                    print "No Art found."
-                artist.save()
-                artists.add(a)
-                self.stdout.write('Added artist: ' + a)
-                self.stdout.write(str(i) + '/' + str(count) + ' tracks completed')
-            else:
-                artist = Artist.objects.get(name=a)
-            track.artist = artist
+                    art_url = ''
+                    self.stderr.write(u"No album art found for {}".format(album_name))
+                album = Album(
+                    name=album_name,
+                    artist = artist,
+                    year=song.get('year', 0),
+                    art_url=art_url,
+                )
 
-            if song['album'] + a not in albums:
-                album = Album()
-                album.name = song['album']
-                album.artist = artist
-                try:
-                    album.year = song['year']
-                except:
-                    pass
-
-                try:
-                    album.art_url = song['albumArtRef'][0]['url']
-                except:
-                    print "No Art found."
                 album.save()
-                albums.add(song['album'] + a)
+                albums.add((album_name, artist_name))
             else:
-                album = Album.objects.get(name=song['album'], artist=artist)
-            track.album = album
+                album = Album.objects.get(name=album_name, artist=artist)
 
-            track.name = song['title']
-            track.stream_id = song['id']
-            try:
-                track.track_no = song['trackNumber']
-            except:
-                track.track_no = 0
-            track.save()
+            track = Track(
+                artist=artist,
+                album=album,
+                name=song['title'],
+                stream_id=song['id'],
+                track_no=song.get('trackNumber', 0)
+            )
+            created_tracks.append(track)
+        Track.objects.bulk_create(created_tracks)
 
         self.stdout.write('All tracks saved!')
         self.stdout.write('Getting Playlists...')
 
         playlists = api.get_all_user_playlist_contents()
         for playlist in playlists:
-            p = Playlist()
-            p.pid = playlist['id']
-            p.name = playlist['name']
-            p.save()
+            p = Playlist.objects.create(
+                pid=playlist['id'],
+                name = playlist['name'],
+            )
+            connections = []
             for entry in playlist['tracks']:
                 try:
                     track = Track.objects.get(stream_id=entry['trackId'])
-                    pc = PlaylistConnection()
-                    pc.playlist = p
-                    pc.track = track
-                    pc.save()
-                except Exception:
-                    print "Not found."
+                    playlist_connection = PlaylistConnection(
+                        playlist=p,
+                        track = track,
+                    )
+                    connections.append(playlist_connection)
+                except Exception as e:
+                    self.stderr.write(e.message)
+
+            PlaylistConnection.objects.bulk_create(connections)
 
         self.stdout.write('Library saved!')
