@@ -42,15 +42,12 @@ class Command(BaseCommand):
                     art_url = song['artistArtRef'][0]['url']
                 except:
                     art_url = ''
-                    self.stderr.write(u"No artist art found for {}".format(artist_name))
                 artist = Artist.objects.create(
                     name=artist_name,
                     art_url=art_url,
                 )
 
                 artists.add(artist_name)
-                self.stdout.write(u'Added artist: {}'.format(artist))
-                self.stdout.write(u'{}/{} tracks completed'.format(i, count))
             else:
                 artist = Artist.objects.get(name=artist_name)
 
@@ -60,7 +57,6 @@ class Command(BaseCommand):
                     art_url = song['albumArtRef'][0]['url']
                 except:
                     art_url = ''
-                    self.stderr.write(u"No album art found for {}".format(album_name))
                 album = Album(
                     name=album_name,
                     artist = artist,
@@ -81,9 +77,8 @@ class Command(BaseCommand):
                 track_no=song.get('trackNumber', 0)
             )
             created_tracks.append(track)
+            self.stdout.write(u'{}/{} tracks saved'.format(i, count), ending='\r')
         Track.objects.bulk_create(created_tracks)
-
-        self.stdout.write('All tracks saved!')
         self.stdout.write('Getting Playlists...')
 
         playlists = api.get_all_user_playlist_contents()
