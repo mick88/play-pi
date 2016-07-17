@@ -22,18 +22,15 @@ def get_gplay_url(stream_id):
 
 def mpd_play(tracks):
     client = get_client()
-    success = False
     site = Site.objects.get_current()
-    while not success:
-        try:
-            client.clear()
-            for track in tracks:
-                track.mpd_id = client.addid(site.domain + reverse('get_stream', args=[track.id, ]))
-                track.save()
-            client.play()
-            success = True
-        except:
-            pass
+    base_address = 'http://{}'.format(site.domain)
+    client.clear()
+    for track in tracks:
+        path = reverse('get_stream', args=[track.id, ])
+        url = base_address + path
+        track.mpd_id = client.addid(url)
+        track.save()
+    client.play()
 
 
 def get_client():
