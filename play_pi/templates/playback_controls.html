@@ -29,12 +29,11 @@
 
 <script language="JavaScript">
 $('#volume-slider').slider({
-    step: 5,
 	formatter: function(value) {
 		return 'Volume: ' + value;
 	}
 });
-$('#volume-slider').on('slide', function (event) {
+$('#volume-slider').on('slideStop', function (event) {
     var volume = event.value;
     $.get('/ajax/volume/' + volume);
 });
