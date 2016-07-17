@@ -3,8 +3,10 @@ import logging
 
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
+from django.http.response import Http404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.views.generic import View
 from django.views.generic.list import ListView
 
 from play_pi.models import *
@@ -112,38 +114,73 @@ def repeat(request):
 	return HttpResponseRedirect(reverse('home'))
 
 
-def ajax(request, method, value=None):
-	client = get_client()
-	status = client.status()
-	if method == 'random':
-		client.random( (-1 * int(status['random'])) + 1 )
-	elif method == 'repeat':
-		client.repeat( (-1 * int(status['repeat'])) + 1 )
-	elif method == 'stop':
+class AjaxView(View):
+	def ajax_random(self, client, *args, **kwargs):
+		status = client.status()
+		client.random((-1 * int(status['random'])) + 1)
+		return client.status()
+
+	def ajax_repeat(self, client, *args, **kwargs):
+		status = client.status()
+		client.repeat((-1 * int(status['repeat'])) + 1)
+		return client.status()
+
+	def ajax_stop(self, client, *args, **kwargs):
 		client.stop()
-	elif method == 'pause':
+		return client.status()
+
+	def ajax_pause(self, client, *args, **kwargs):
 		client.pause()
-	elif method == 'play':
+		return client.status()
+
+	def ajax_play(self, client, *args, **kwargs):
 		client.play()
-	elif method == 'next':
+		return client.status()
+
+	def ajax_next(self, client, *args, **kwargs):
 		client.next()
-	elif method == 'previous':
+		return client.status()
+
+	def ajax_previous(self, client, *args, **kwargs):
 		client.previous()
-	elif method == 'volume':
+		return client.status()
+
+	def ajax_volume(self, client, value, *args, **kwargs):
 		volume = int(value)
 		client.setvol(volume)
-	elif method == 'current_song':
-		track = get_currently_playing_track()
-		if isinstance(track, Track):
-			data = {'title': track.name, 'album': track.album.name, 'artist': track.artist.name, 'state': client.status()['state']}
-		elif isinstance(track, RadioStation):
-			data = {'title': track.name, 'album': '', 'artist': '', 'state': client.status()['state']}
-		else:
-			data = {}
+		return client.status()
+
+	def ajax_current_song(self, client, *args, **kwargs):
+		try:
+			track = get_currently_playing_track()
+			if isinstance(track, Track):
+				return {
+					'title': track.name,
+					'album': track.album.name,
+					'artist': track.artist.name,
+					'state': client.status()['state'],
+				}
+			elif isinstance(track, RadioStation):
+				return {
+					'title': track.name,
+					'album': '',
+					'artist': '',
+					'state': client.status()['state'],
+				}
+			else:
+				return {}
+		except Exception as e:
+			logger.error(e.message)
+			return {}
+
+	def dispatch(self, request, *args, **kwargs):
+		method = getattr(self, u'ajax_{method}'.format(**kwargs), None)
+		if method is None:
+			raise Http404(u'Method {method} does not exist'.format(**kwargs))
+		client = get_client()
+		data = method(client, *args, **kwargs)
 		return HttpResponse(json.dumps(data), 'application/javascript')
 
-	return_data = client.status()
-	return HttpResponse(json.dumps(return_data), 'application/javascript')
 
 class RadioStationListView(ListView):
 	model = RadioStation

@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from play_pi.models import *
-from play_pi.views import RadioStationListView
+from play_pi.views import RadioStationListView, AjaxView
 
 admin.autodiscover()
 
@@ -22,7 +22,7 @@ urlpatterns = patterns('',
 	url(r'^controls/repeat/$', 'play_pi.views.repeat', name='repeat'),
 	url(r'^get_stream/(?P<track_id>\d+)/$', 'play_pi.views.get_stream', name='get_stream'),
 	url(r'^stop/$', 'play_pi.views.stop', name='stop'),
-	url(r'^ajax/(?P<method>\w+)/?$', 'play_pi.views.ajax', name='ajax'),
-	url(r'^ajax/(?P<method>volume)/(?P<value>\d+)/?$', 'play_pi.views.ajax', name='ajax'),
+	url(r'^ajax/(?P<method>\w+)/?$', AjaxView.as_view(), name='ajax'),
+	url(r'^ajax/(?P<method>volume)/(?P<value>\d+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^admin/', include(admin.site.urls)),
 )
