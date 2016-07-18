@@ -13,11 +13,11 @@
             <i class='glyphicon glyphicon-forward icon-white'></i>
         </button>
         <button type="button" class="btn {% if mpd_status.random == '1' %}btn-highlight{% endif %} btn-default"
-                href='{% url "random" %}' id='random-button'>
+                href='{% url "control" action='random' %}' id='random-button'>
             <i class='glyphicon glyphicon-random icon-white'></i>
         </button>
         <button type="button" class="btn {% if mpd_status.repeat == '1' %}btn-highlight{% endif %} btn-default"
-                href='{% url "repeat" %}' id='repeat-button'>
+                href='{% url "control" action='repeat' %}' id='repeat-button'>
             <i class='glyphicon glyphicon-repeat icon-white'></i>
         </button>
         <button type="button" class="btn btn-default" id='volume-button'>

@@ -1,7 +1,7 @@
 import json
 import logging
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.response import Http404
 from django.shortcuts import render_to_response, get_object_or_404
@@ -119,27 +119,33 @@ class StreamView(RedirectView):
 		return get_gplay_url(track.stream_id)
 
 
-def stop(request):
-	client = get_client()
-	try:
-          client.clear()
-        except:
-          pass
-	client.stop()
-	return HttpResponseRedirect(reverse('home'))
+class ControlView(RedirectView):
+	url = reverse_lazy('home')
 
-def random(request):
-	client = get_client()
-	status = client.status()
-	client.random( (-1 * int(status['random'])) + 1 )
-	return HttpResponseRedirect(reverse('home'))
+	def control_stop(self):
+		client = get_client()
+		try:
+			client.clear()
+		except:
+			pass
+		client.stop()
 
-def repeat(request):
-	client = get_client()
-	status = client.status()
-	client.repeat( (-1 * int(status['repeat'])) + 1 )
-	logger.debug(status)
-	return HttpResponseRedirect(reverse('home'))
+	def control_random(self):
+		client = get_client()
+		status = client.status()
+		client.random((-1 * int(status['random'])) + 1)
+
+	def control_repeat(self):
+		client = get_client()
+		status = client.status()
+		client.repeat((-1 * int(status['repeat'])) + 1)
+		logger.debug(status)
+
+	def dispatch(self, request, *args, **kwargs):
+		action = kwargs['action']
+		control = getattr(self, 'control_{}'.format(action))
+		control()
+		return super(ControlView, self).dispatch(request, *args, **kwargs)
 
 
 class AjaxView(View):
