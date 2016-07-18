@@ -51,12 +51,18 @@ class PlaylistListView(BaseGridView):
 	model = Playlist
 
 
-def playlist(request,playlist_id):
-	playlist = Playlist.objects.get(id=playlist_id)
-	tracks = [pc.track for pc in PlaylistConnection.objects.filter(playlist=playlist)]
-	return render_to_response('playlist.html',
-		{'playlist': playlist, 'tracks': tracks, 'view': 'single_playlist'},
-		context_instance=RequestContext(request))
+class PlaylistView(DetailView):
+	model = Playlist
+	pk_url_kwarg = 'playlist_id'
+	template_name = 'playlist.html'
+	context_object_name = 'playlist'
+
+	def get_context_data(self, **kwargs):
+		data = super(PlaylistView, self).get_context_data(**kwargs)
+		data['tracks'] = [pc.track for pc in PlaylistConnection.objects.filter(playlist=self.object)]
+		data['view'] = 'single_playlist'
+		return data
+
 
 def album(request,album_id):
 	album = Album.objects.get(id=album_id)
