@@ -7,7 +7,7 @@
 {% block content %}
 
 {% if view == 'album' and artist %}
-<h1>{{ artist.name }} <a class='btn btn-default' href='{% url "play_artist" artist.id %}'>▶ Play Artist</a></h1>
+<h1>{{ artist.name }} <a class='btn btn-default' href='{% url "play" 'artist' artist.id %}'>▶ Play Artist</a></h1>
 {% endif %}
 
 <div class='row'>

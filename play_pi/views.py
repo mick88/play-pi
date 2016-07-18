@@ -4,12 +4,13 @@ import logging
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.response import Http404
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic import View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
+from django.views.generic.base import RedirectView
 from play_pi.models import *
 from play_pi.utils import get_client, mpd_play, get_gplay_url, mpd_play_radio, get_currently_playing_track
 
@@ -76,39 +77,46 @@ class AlbumView(DetailView):
 		return data
 
 
-def play_album(request,album_id):
-	album = Album.objects.get(id=album_id)
-	tracks = Track.objects.filter(album=album).order_by('track_no')
-	mpd_play(tracks)
-	return HttpResponseRedirect(reverse('album',args=[album.id,]))
+class PlayView(View):
+	def play_album(self, album_id):
+		album = Album.objects.get(id=album_id)
+		tracks = Track.objects.filter(album=album).order_by('track_no')
+		mpd_play(tracks)
+		return HttpResponseRedirect(reverse('album', args=[album.id, ]))
 
-def play_artist(request,artist_id):
-	artist = Artist.objects.get(id=artist_id)
-	tracks = Track.objects.filter(artist=artist)
-	mpd_play(tracks)
-	return HttpResponseRedirect(reverse('artist',args=[artist.id,]))
+	def play_artist(self, artist_id):
+		artist = Artist.objects.get(id=artist_id)
+		tracks = Track.objects.filter(artist=artist)
+		mpd_play(tracks)
+		return HttpResponseRedirect(reverse('artist', args=[artist.id, ]))
 
-def play_playlist(request,playlist_id):
-	playlist = Playlist.objects.get(id=playlist_id)
-	tracks = [pc.track for pc in PlaylistConnection.objects.filter(playlist=playlist)]
-	mpd_play(tracks)
-	return HttpResponseRedirect(reverse('playlist',args=[playlist.id,]))
+	def play_playlist(self, playlist_id):
+		playlist = Playlist.objects.get(id=playlist_id)
+		tracks = [pc.track for pc in PlaylistConnection.objects.filter(playlist=playlist)]
+		mpd_play(tracks)
+		return HttpResponseRedirect(reverse('playlist', args=[playlist.id, ]))
 
-def get_stream(request,track_id):
-	track = Track.objects.get(id=track_id)
-	url = get_gplay_url(track.stream_id)
-	return HttpResponseRedirect(url)
+	def play_track(self, track_id):
+		track = Track.objects.get(id=track_id)
+		mpd_play([track, ])
+		return HttpResponseRedirect(reverse('album', args=[track.album.id, ]))
 
-def play_track(request,track_id):
-	track = Track.objects.get(id=track_id)
-	mpd_play([track,])
-	return HttpResponseRedirect(reverse('album',args=[track.album.id,]))
+	def play_radio(self, radio_id):
+		station = RadioStation.objects.get(id=radio_id)
+		mpd_play_radio(station)
+		return HttpResponseRedirect(reverse('radios'))
+
+	def dispatch(self, request, *args, **kwargs):
+		entity = kwargs.get('entity')
+		play_id = kwargs.get('play_id')
+		play = getattr(self, 'play_{}'.format(entity))
+		return play(play_id)
 
 
-def play_radio(request, radio_id):
-	station = RadioStation.objects.get(id=radio_id)
-	mpd_play_radio(station)
-	return HttpResponseRedirect(reverse('radios'))
+class StreamView(RedirectView):
+	def get_redirect_url(self, *args, **kwargs):
+		track = get_object_or_404(Track, id=kwargs['track_id'])
+		return get_gplay_url(track.stream_id)
 
 
 def stop(request):

@@ -9,7 +9,7 @@
 
 <div class="row">
   <div class="col-md-12">
-    <h1>{{ album.name }} <small> {{ album.artist.name }}</small> <a class='btn btn-default' href='{% url "play_album" album.id %}'>▶ Play Album</a>
+    <h1>{{ album.name }} <small> {{ album.artist.name }}</small> <a class='btn btn-default' href='{% url "play" 'album' album.id %}'>▶ Play Album</a>
     </h1>
   </div>
 </div>
@@ -26,7 +26,7 @@
       </tr>
       {% for track in tracks %}
         <tr>
-        	<td class='play-col'><a href='{% url "play_track" track.id %}'>▶</a></td>
+        	<td class='play-col'><a href='{% url "play" 'track' track.id %}'>▶</a></td>
         	<td class='num-col'>{{ track.track_no }}</td>
         	<td>{{ track.name }}</td>
         </tr>

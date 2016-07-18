@@ -22,7 +22,7 @@
                 </tr>
                 {% for station in radiostation_list %}
                     <tr>
-                        <td class='play-col'><a href='{% url "play_radio" station.id %}'>▶</a></td>
+                        <td class='play-col'><a href='{% url "play" 'radio' station.id %}'>▶</a></td>
                         <td>{{ station.name }}</td>
                     </tr>
                 {% endfor %}
