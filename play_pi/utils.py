@@ -10,8 +10,7 @@ from play_pi.models import Track, RadioStation
 
 logger = logging.getLogger(__name__)
 
-client = mpd.MPDClient()
-client.connect("localhost", 6600)
+client = None
 
 
 def get_gplay_url(stream_id):
@@ -35,9 +34,8 @@ def mpd_play(tracks):
 
 def get_client():
     global client
-    try:
-        client.status()
-    except:
+    if client is None:
+        client = mpd.MPDClient()
         client.connect("localhost", 6600)
     return client
 
