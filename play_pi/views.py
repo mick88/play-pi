@@ -64,12 +64,17 @@ class PlaylistView(DetailView):
 		return data
 
 
-def album(request,album_id):
-	album = Album.objects.get(id=album_id)
-	tracks = Track.objects.filter(album=album).order_by('track_no')
-	return render_to_response('album.html',
-		{'album': album, 'tracks': tracks, 'view': 'single_album'},
-		context_instance=RequestContext(request))
+class AlbumView(DetailView):
+	model = Album
+	pk_url_kwarg = 'album_id'
+	template_name = 'album.html'
+
+	def get_context_data(self, **kwargs):
+		data = super(AlbumView, self).get_context_data(**kwargs)
+		data['tracks'] = Track.objects.filter(album=self.object).order_by('track_no')
+		data['view'] = 'single_album'
+		return data
+
 
 def play_album(request,album_id):
 	album = Album.objects.get(id=album_id)
