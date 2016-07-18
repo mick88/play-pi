@@ -27,7 +27,10 @@ def mpd_play(tracks):
     for track in tracks:
         path = reverse('get_stream', args=[track.id, ])
         url = base_address + path
-        track.mpd_id = client.addid(url)
+        mpd_id = client.addid(url)
+        if mpd_id is None:
+            raise ValueError('Could not add {} to queue'.format(track))
+        track.mpd_id = mpd_id
         track.save()
     client.play()
 
@@ -44,6 +47,8 @@ def mpd_play_radio(station):
     client = get_client()
     client.clear()
     mpd_id = client.addid(station.url)
+    if mpd_id is None:
+        raise ValueError('Could not play {}'.format(station))
     station.mpd_id = mpd_id
     station.save()
     client.play()
