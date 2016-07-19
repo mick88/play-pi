@@ -35,9 +35,13 @@ It's highly recommended you use an [application specific password](https://suppo
 * run `./manage.py migrate --fake-initial` - this will mark initial migrations as applied and apply any additional migrations
 
 ### Install as apache service
-These instructions assume that the project is located in `/home/pi/src/play-pi` and you have user `pi`
+These instructions assume that the project is located in `/home/pi/src/play-pi` and you have user `pi`. If your setting is different, you will have to edit `play-pi.conf` and adjust the steps accordingly.
 
 * install apache2 and mod_wsgi: `sudo apt-get install apache2 libapache2-mod-wsgi`
 * Symlink `play-pi.conf` to your sites available and enable:
-`sudo ln -s /home/pi/src/play-pi/apache2/play-pi.conf /etc/apache2/sites-available/play-pi.conf`
-`sudo ln -s /etc/apache2/sites-available/play-pi.conf /etc/apache2/sites-enabled/play-pi.conf`
+    ```bash
+    sudo ln -s /home/pi/src/play-pi/apache2/play-pi.conf /etc/apache2/sites-available/play-pi.conf
+    sudo ln -s /etc/apache2/sites-available/play-pi.conf /etc/apache2/sites-enabled/play-pi.conf
+    ```
+* Restart apache `sudo apache2ctl graceful`
+* If there are any errors you will find them in the apache error log: `/var/log/apache2/error.log`
