@@ -41,6 +41,18 @@ def get_client():
     return client
 
 
+class mpd_client(object):
+    """
+    Create mpd connection for the statement and gracefully close when done
+    """
+    def __enter__(self):
+        self.client = get_client()
+        return self.client
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.client.disconnect()
+
+
 def mpd_play_radio(station):
     client = get_client()
     client.clear()
