@@ -153,6 +153,10 @@ LOGGING = {
     }
 }
 
+# MPD deamon settings
+MPD_ADDRESS = 'localhost'
+MPD_PORT = 6600
+
 try:
     from local_settings import *
 except ImportError:

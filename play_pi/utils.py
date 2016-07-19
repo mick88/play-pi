@@ -6,7 +6,9 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.urlresolvers import reverse
 
+from django.conf import settings
 from play_pi.models import Track, RadioStation
+from play_pi.settings import MPD_PORT
 
 logger = logging.getLogger(__name__)
 
@@ -32,18 +34,13 @@ def mpd_play(tracks):
         client.play()
 
 
-def get_client():
-    client = mpd.MPDClient()
-    client.connect("localhost", 6600)
-    return client
-
-
 class mpd_client(object):
     """
     Create mpd connection for the statement and gracefully close when done
     """
     def __enter__(self):
-        self.client = get_client()
+        self.client = mpd.MPDClient()
+        self.client.connect(settings.MPD_ADDRESS, MPD_PORT)
         return self.client
 
     def __exit__(self, exc_type, exc_val, exc_tb):
