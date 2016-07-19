@@ -10,9 +10,6 @@ from play_pi.models import Track, RadioStation
 
 logger = logging.getLogger(__name__)
 
-client = None
-
-
 def get_gplay_url(stream_id):
     app = apps.get_app_config('play_pi')
     api = app.get_api()
@@ -20,19 +17,19 @@ def get_gplay_url(stream_id):
 
 
 def mpd_play(tracks):
-    client = get_client()
-    site = Site.objects.get_current()
-    base_address = 'http://{}'.format(site.domain)
-    client.clear()
-    for track in tracks:
-        path = reverse('get_stream', args=[track.id, ])
-        url = base_address + path
-        mpd_id = client.addid(url)
-        if mpd_id is None:
-            raise ValueError('Could not add {} to queue'.format(track))
-        track.mpd_id = mpd_id
-        track.save()
-    client.play()
+    with mpd_client() as client:
+        site = Site.objects.get_current()
+        base_address = 'http://{}'.format(site.domain)
+        client.clear()
+        for track in tracks:
+            path = reverse('get_stream', args=[track.id, ])
+            url = base_address + path
+            mpd_id = client.addid(url)
+            if mpd_id is None:
+                raise ValueError('Could not add {} to queue'.format(track))
+            track.mpd_id = mpd_id
+            track.save()
+        client.play()
 
 
 def get_client():
@@ -54,18 +51,20 @@ class mpd_client(object):
 
 
 def mpd_play_radio(station):
-    client = get_client()
-    client.clear()
-    mpd_id = client.addid(station.url)
-    if mpd_id is None:
-        raise ValueError('Could not play {}'.format(station))
-    station.mpd_id = mpd_id
-    station.save()
-    client.play()
+    with mpd_client() as client:
+        client.clear()
+        mpd_id = client.addid(station.url)
+        if mpd_id is None:
+            raise ValueError('Could not play {}'.format(station))
+        station.mpd_id = mpd_id
+        station.save()
+        client.play()
 
 
 def get_currently_playing_track():
-    status = get_client().status()
+    with mpd_client() as client:
+        status = client.status()
+
     try:
         mpd_id = int(status['songid'])
     except:

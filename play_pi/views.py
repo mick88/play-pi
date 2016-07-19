@@ -1,18 +1,18 @@
 import json
 import logging
 
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.response import Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic import View
+from django.views.generic.base import RedirectView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from django.views.generic.base import RedirectView
 from play_pi.models import *
-from play_pi.utils import get_client, mpd_play, get_gplay_url, mpd_play_radio, get_currently_playing_track
+from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, get_currently_playing_track, mpd_client
 
 logger = logging.getLogger(__name__)
 
@@ -122,21 +122,18 @@ class StreamView(RedirectView):
 class ControlView(RedirectView):
 	url = reverse_lazy('home')
 
-	def control_stop(self):
-		client = get_client()
+	def control_stop(self, client):
 		try:
 			client.clear()
 		except:
 			pass
 		client.stop()
 
-	def control_random(self):
-		client = get_client()
+	def control_random(self, client):
 		status = client.status()
 		client.random((-1 * int(status['random'])) + 1)
 
-	def control_repeat(self):
-		client = get_client()
+	def control_repeat(self, client):
 		status = client.status()
 		client.repeat((-1 * int(status['repeat'])) + 1)
 		logger.debug(status)
@@ -144,7 +141,8 @@ class ControlView(RedirectView):
 	def dispatch(self, request, *args, **kwargs):
 		action = kwargs['action']
 		control = getattr(self, 'control_{}'.format(action))
-		control()
+		with mpd_client() as client:
+			control(client)
 		return super(ControlView, self).dispatch(request, *args, **kwargs)
 
 
@@ -211,8 +209,8 @@ class AjaxView(View):
 		method = getattr(self, u'ajax_{method}'.format(**kwargs), None)
 		if method is None:
 			raise Http404(u'Method {method} does not exist'.format(**kwargs))
-		client = get_client()
-		data = method(client, *args, **kwargs)
+		with mpd_client() as client:
+			data = method(client, *args, **kwargs)
 		return HttpResponse(json.dumps(data), 'application/javascript')
 
 
