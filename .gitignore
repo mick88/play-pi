@@ -16,3 +16,5 @@ pip-selfcheck.json
 /share
 .vagrant/
 /build/
+/apache2/static
+/apache2/media
