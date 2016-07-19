@@ -11,6 +11,11 @@ GPLAY_PASS = "" # Define these in local_settings.py, not here
 DEVICE_ID = "" # Define these in local_settings.py, not here
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__)) + '/..'
+APACHE_ROOT = os.path.join(PROJECT_PATH, 'apache2')
+STATIC_ROOT = os.path.join(APACHE_ROOT, 'static')
+MEDIA_ROOT = os.path.join(APACHE_ROOT, 'media')
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -57,24 +62,9 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
-
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/var/www/example.com/static/"
-STATIC_ROOT = ''
-
-# URL prefix for static files.
-# Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/static/'
 
 # List of finder classes that know how to find static files in
 # various locations.
