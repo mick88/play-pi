@@ -36,10 +36,8 @@ def mpd_play(tracks):
 
 
 def get_client():
-    global client
-    if client is None:
-        client = mpd.MPDClient()
-        client.connect("localhost", 6600)
+    client = mpd.MPDClient()
+    client.connect("localhost", 6600)
     return client
 
 
