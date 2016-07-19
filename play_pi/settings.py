@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'debug_toolbar',
+    'config_generator',
     'play_pi')
 
 # A sample logging configuration. The only tangible logging
