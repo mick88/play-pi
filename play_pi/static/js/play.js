@@ -76,6 +76,9 @@ $(document).ready(function() {
       } else if (currentStatus === "pause") {
         $("#play-button").show();
         $("#pause-button").hide();
+      } else if (currentStatus === "stop") {
+        $("#play-button").show();
+        $("#pause-button").hide();
       } else {
         $("#play-button").hide();
         $("#pause-button").hide();

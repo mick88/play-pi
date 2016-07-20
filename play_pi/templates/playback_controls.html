@@ -12,6 +12,9 @@
         <button type="button" class="btn btn-default" href="#" id="next-button">
             <i class='glyphicon glyphicon-forward icon-white'></i>
         </button>
+        <button type="button" class="btn btn-default" href="#" id="stop-button">
+            <i class='glyphicon glyphicon-stop icon-white'></i>
+        </button>
         <button type="button" class="btn {% if mpd_status.random == '1' %}btn-highlight{% endif %} btn-default"
                 href='{% url "control" action='random' %}' id='random-button'>
             <i class='glyphicon glyphicon-random icon-white'></i>
