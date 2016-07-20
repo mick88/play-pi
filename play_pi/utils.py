@@ -23,15 +23,17 @@ def mpd_play(tracks):
         site = Site.objects.get_current()
         base_address = 'http://{}'.format(site.domain)
         client.clear()
-        for track in tracks:
+        for n, track in enumerate(tracks):
             path = reverse('get_stream', args=[track.id, ])
             url = base_address + path
             mpd_id = client.addid(url)
             if mpd_id is None:
                 raise ValueError('Could not add {} to queue'.format(track))
+            if n == 0:
+                # Start playing as soon as first element is added
+                client.play()
             track.mpd_id = mpd_id
             track.save()
-        client.play()
 
 
 class mpd_client(object):
