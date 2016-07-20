@@ -58,6 +58,11 @@ $(document).ready(function() {
     clearTimeout(currentTimeout);
     $.ajax("/ajax/current_song",{type: "GET"}).always(function(data) {
       currentTimeout = setTimeout(fetchCurrentlyPlaying, 5000);
+
+      if (data == '{}') {
+        $("#current-song").hide();
+        return;
+      }
       
       var data = JSON.parse(data['responseText']);
       $("#current-song-album").text(data.album);
