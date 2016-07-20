@@ -119,6 +119,13 @@ class PlayView(View):
 		mpd_play([track, ])
 		return HttpResponseRedirect(reverse('album', args=[track.album.id, ]))
 
+	def play_track_jump(self, track_id):
+		track = Track.objects.get(id=track_id)
+		if track.mpd_id:
+			with mpd_client() as client:
+				client.playid(track.mpd_id)
+		return HttpResponseRedirect(reverse('queue'))
+
 	def play_radio(self, radio_id):
 		station = RadioStation.objects.get(id=radio_id)
 		mpd_play_radio(station)
@@ -128,6 +135,8 @@ class PlayView(View):
 		entity = kwargs.get('entity')
 		play_id = kwargs.get('play_id')
 		play = getattr(self, 'play_{}'.format(entity))
+		if play is None:
+			raise Http404('Play {} not available'.format(entity))
 		return play(play_id)
 
 

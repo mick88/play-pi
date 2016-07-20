@@ -27,7 +27,7 @@
                             {% if track == current_track %}
                                 ▶
                             {% else %}
-                                <a href='{% url "play" 'track' track.id %}'>▶</a>
+                                <a href='{% url "play" 'track_jump' track.id %}'>▶</a>
                             {% endif %}
                         </td>
                         <td>{{ track.name }}</td>
