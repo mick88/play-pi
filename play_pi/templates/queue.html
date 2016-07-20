@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block jquery %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1>Now playing</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <img src='{% firstof current_track.art_url '/static/img/banner.png' %}' class='album-image' alt=''/>
+        </div>
+        <div class="col-md-9">
+            <table class="table table-striped album-table">
+                <tr>
+                    <th class='play-col'></th>
+                    <th>Name</th>
+                    <th>Artist</th>
+                </tr>
+                {% for track in tracks %}
+                    <tr>
+                        <td class='play-col'>
+                            {% if track == current_track %}
+                                ▶
+                            {% else %}
+                                <a href='{% url "play" 'track_jump' track.id %}'>▶</a>
+                            {% endif %}
+                        </td>
+                        <td>{{ track.name }}</td>
+                        <td>{{ track.artist }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -7,12 +7,12 @@ from django.http.response import Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic import View
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from play_pi.models import *
-from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, get_currently_playing_track, mpd_client
+from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, get_currently_playing_track, mpd_client, mpd_enqueue
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +26,25 @@ class BaseGridView(ListView):
 		if not GoogleCredentials.objects.enabled().exists():
 			return render_to_response('error.html', context_instance=RequestContext(request))
 		return super(BaseGridView, self).dispatch(request, *args, **kwargs)
+
+
+class QueueView(TemplateView):
+	template_name = 'queue.html'
+
+	def get_context_data(self, **kwargs):
+		data = super(QueueView, self).get_context_data(**kwargs)
+		with mpd_client() as client:
+			playlist = client.playlistinfo()
+			status = client.status()
+
+		current_id = int(status['songid'])
+		ids = [int(song['id']) for song in playlist]
+		tracks = list(Track.objects.filter(mpd_id__in=ids).select_related('artist'))
+		radios = list(RadioStation.objects.filter(mpd_id__in=ids))
+		tracks = sorted(tracks + radios, key=lambda track: ids.index(track.mpd_id))
+		data['tracks'] = tracks
+		data['current_track'] = next((track for track in tracks if track.mpd_id == current_id), None)
+		return data
 
 
 class ArtistListView(BaseGridView):
@@ -101,6 +120,19 @@ class PlayView(View):
 		mpd_play([track, ])
 		return HttpResponseRedirect(reverse('album', args=[track.album.id, ]))
 
+	def play_track_jump(self, track_id):
+		track = Track.objects.get(id=track_id)
+		if track.mpd_id:
+			with mpd_client() as client:
+				client.playid(track.mpd_id)
+		return HttpResponseRedirect(reverse('queue'))
+
+	def play_track_enqueue(self, track_id):
+		track = Track.objects.get(id=track_id)
+		mpd_enqueue(track)
+		url = self.request.META.get('HTTP_REFERER', reverse_lazy('queue'))
+		return HttpResponseRedirect(url)
+
 	def play_radio(self, radio_id):
 		station = RadioStation.objects.get(id=radio_id)
 		mpd_play_radio(station)
@@ -110,6 +142,8 @@ class PlayView(View):
 		entity = kwargs.get('entity')
 		play_id = kwargs.get('play_id')
 		play = getattr(self, 'play_{}'.format(entity))
+		if play is None:
+			raise Http404('Play {} not available'.format(entity))
 		return play(play_id)
 
 

@@ -60,6 +60,10 @@ class Track(models.Model):
 	track_no = models.IntegerField(default=0)
 	mpd_id = models.IntegerField(default=0)
 
+	@property
+	def art_url(self):
+	    return self.artist.art_url
+
 	def __unicode__(self):
 		return self.name
 
