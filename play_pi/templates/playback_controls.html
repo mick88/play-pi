@@ -26,15 +26,3 @@
         </button>
     </div>
 </div>
-
-<script language="JavaScript">
-$('#volume-slider').slider({
-	formatter: function(value) {
-		return 'Volume: ' + value;
-	}
-});
-$('#volume-slider').on('slideStop', function (event) {
-    var volume = event.value;
-    $.get('/ajax/volume/' + volume);
-});
-</script>

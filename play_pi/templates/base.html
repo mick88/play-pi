@@ -1,4 +1,5 @@
 {% load static %}
+{% load bootstrap3 %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -7,20 +8,14 @@
 <title>Play Pi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+{% bootstrap_css %}
 <link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/bootstrap-theme.css" media="screen" />
-<link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/bootstrap.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/bootstrap-slider.min.css" media="screen" />
 <link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/style.css" media="screen" />
-
-<script src="{% get_static_prefix %}js/jquery.min.js"></script>
-<script src="{% get_static_prefix %}js/bootstrap.js"></script>
-<script src="{% get_static_prefix %}js/bootstrap-slider.min.js"></script>
 
 <link rel="shortcut icon" type="image/x-icon" href="{% get_static_prefix %}img/favicon.ico" />
 
 <link rel='apple-touch-icon-precomposed' href='{% get_static_prefix %}img/apple-touch-icon.png' />
-
-<script src="{% static 'js/play.js' %}"></script>
 
 <body>
 
@@ -99,5 +94,10 @@
 
 </div>
 
+{% block scripts %}
+    {% bootstrap_javascript jquery=True %}
+    <script src="{% get_static_prefix %}js/bootstrap-slider.min.js"></script>
+    <script src="{% static 'js/play.js' %}"></script>
+{% endblock %}
 </body>
 </html>

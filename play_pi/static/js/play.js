@@ -86,3 +86,13 @@ $(document).ready(function() {
   $("#play-button").hide();
   fetchCurrentlyPlaying();
 });
+
+$('#volume-slider').slider({
+	formatter: function(value) {
+		return 'Volume: ' + value;
+	}
+});
+$('#volume-slider').on('slideStop', function (event) {
+    var volume = event.value;
+    $.get('/ajax/volume/' + volume);
+});
