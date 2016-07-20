@@ -12,7 +12,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from play_pi.models import *
-from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, get_currently_playing_track, mpd_client
+from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, get_currently_playing_track, mpd_client, mpd_enqueue
 
 logger = logging.getLogger(__name__)
 
@@ -126,6 +126,12 @@ class PlayView(View):
 			with mpd_client() as client:
 				client.playid(track.mpd_id)
 		return HttpResponseRedirect(reverse('queue'))
+
+	def play_track_enqueue(self, track_id):
+		track = Track.objects.get(id=track_id)
+		mpd_enqueue(track)
+		url = self.request.META.get('HTTP_REFERER', reverse_lazy('queue'))
+		return HttpResponseRedirect(url)
 
 	def play_radio(self, radio_id):
 		station = RadioStation.objects.get(id=radio_id)

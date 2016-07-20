@@ -34,6 +34,20 @@ def mpd_play(tracks):
         client.play()
 
 
+def mpd_enqueue(*tracks):
+    """ Append tracks to the queue without actually playing them """
+    with mpd_client() as client:
+        site = Site.objects.get_current()
+        base_address = 'http://{}'.format(site.domain)
+        for track in tracks:
+            path = reverse('get_stream', args=[track.id, ])
+            url = base_address + path
+            track.mpd_id = client.addid(url)
+            if track.mpd_id is None:
+                raise ValueError('Could not add {} to queue'.format(track))
+            track.save()
+
+
 class mpd_client(object):
     """
     Create mpd connection for the statement and gracefully close when done
