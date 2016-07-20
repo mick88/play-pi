@@ -7,7 +7,7 @@ from django.http.response import Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.views.generic import View
-from django.views.generic.base import RedirectView
+from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
@@ -26,6 +26,19 @@ class BaseGridView(ListView):
 		if not GoogleCredentials.objects.enabled().exists():
 			return render_to_response('error.html', context_instance=RequestContext(request))
 		return super(BaseGridView, self).dispatch(request, *args, **kwargs)
+
+
+class QueueView(TemplateView):
+	template_name ='queue.html'
+
+	def get_context_data(self, **kwargs):
+		data = super(QueueView, self).get_context_data(**kwargs)
+		with mpd_client() as client:
+			playlist = client.playlistinfo()
+			ids = [int(song['id']) for song in playlist]
+			tracks = Track.objects.filter(mpd_id__in=ids).select_related('artist')
+			data['songs'] = sorted(tracks, key=lambda track: ids.index(track.mpd_id))
+		return data
 
 
 class ArtistListView(BaseGridView):
