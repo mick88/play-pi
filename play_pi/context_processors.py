@@ -1,8 +1,10 @@
 import mpd
 
+from play_pi.utils import mpd_client
+
+
 def mpd_status(request):
-	client = mpd.MPDClient()
-	client.connect("localhost", 6600)
-	status = client.status()
-	client.disconnect()
-	return {'mpd_status': status}
+    with mpd_client() as client:
+        return {
+            'mpd_status': client.status(),
+        }
