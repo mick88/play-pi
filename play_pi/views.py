@@ -29,15 +29,20 @@ class BaseGridView(ListView):
 
 
 class QueueView(TemplateView):
-	template_name ='queue.html'
+	template_name = 'queue.html'
 
 	def get_context_data(self, **kwargs):
 		data = super(QueueView, self).get_context_data(**kwargs)
 		with mpd_client() as client:
 			playlist = client.playlistinfo()
-			ids = [int(song['id']) for song in playlist]
-			tracks = Track.objects.filter(mpd_id__in=ids).select_related('artist')
-			data['songs'] = sorted(tracks, key=lambda track: ids.index(track.mpd_id))
+			status = client.status()
+
+		current_id = int(status['songid'])
+		ids = [int(song['id']) for song in playlist]
+		tracks = Track.objects.filter(mpd_id__in=ids).select_related('artist')
+		tracks = sorted(tracks, key=lambda track: ids.index(track.mpd_id))
+		data['tracks'] = tracks
+		data['current_track'] = next((track for track in tracks if track.mpd_id == current_id), None)
 		return data
 
 
