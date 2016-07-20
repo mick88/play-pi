@@ -91,7 +91,6 @@ $(document).ready(function() {
     });
   }
   $("#current-song").hide();
-  $("#play-button").hide();
   fetchCurrentlyPlaying();
 });
 
