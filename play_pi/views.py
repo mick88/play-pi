@@ -39,8 +39,9 @@ class QueueView(TemplateView):
 
 		current_id = int(status['songid'])
 		ids = [int(song['id']) for song in playlist]
-		tracks = Track.objects.filter(mpd_id__in=ids).select_related('artist')
-		tracks = sorted(tracks, key=lambda track: ids.index(track.mpd_id))
+		tracks = list(Track.objects.filter(mpd_id__in=ids).select_related('artist'))
+		radios = list(RadioStation.objects.filter(mpd_id__in=ids))
+		tracks = sorted(tracks + radios, key=lambda track: ids.index(track.mpd_id))
 		data['tracks'] = tracks
 		data['current_track'] = next((track for track in tracks if track.mpd_id == current_id), None)
 		return data
