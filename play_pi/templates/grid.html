@@ -24,7 +24,7 @@
 
     <div class="col-md-4">
       <a href="{{ item.get_absolute_url }}" class="thumbnail" name="{{ item.name }}">
-	      <img src="{% if item and item.art_url %} {{ item.art_url }} {% else %} /static/img/banner.png {% endif %} " alt="" />
+	      <img src="{% firstof item.art_url '/static/img/banner.png' %} " alt="" />
 	      <div class='cover'><h3>{{ item.name|wordwrap:20|linebreaksbr}}</h3></div>
       </a>
     </div>

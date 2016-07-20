@@ -60,7 +60,7 @@ class PlaylistView(DetailView):
 
 	def get_context_data(self, **kwargs):
 		data = super(PlaylistView, self).get_context_data(**kwargs)
-		data['tracks'] = [pc.track for pc in PlaylistConnection.objects.filter(playlist=self.object)]
+		data['tracks'] = self.object.tracks.select_related('artist')
 		data['view'] = 'single_playlist'
 		return data
 

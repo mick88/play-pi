@@ -14,7 +14,7 @@
 </div>
 <div class="row">
   <div class="col-md-3">
-    <img src='{% if playlist and playlist.art_url %} {{ playlist.art_url }} {% else %} /static/img/banner.png {% endif %}' class='album-image' alt=''/>
+    <img src='{% firstof playlist.art_url ' /static/img/banner.png ' %}' class='album-image' alt=''/>
   </div>
   <div class="col-md-9">
   <table class="table table-striped album-table">

@@ -67,6 +67,7 @@ class Track(models.Model):
 class Playlist(models.Model):
 	name = models.CharField(max_length=200)
 	pid = models.CharField(max_length=200)
+	tracks = models.ManyToManyField(Track, through='PlaylistConnection', related_name='playlists')
 
 	def __unicode__(self):
 		return self.name
@@ -75,9 +76,7 @@ class Playlist(models.Model):
 		return reverse('playlist', args=[self.id])
 
 	def get_art(self):
-		pc = PlaylistConnection.objects.filter(playlist=self)[0]
-		track = pc.track
-		artist = track.artist
+		artist = Artist.objects.filter(track__playlists=self).first()
 		return artist.art_url
 
 	art_url = property(get_art)
