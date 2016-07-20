@@ -3,13 +3,14 @@ from django.contrib import admin
 
 from play_pi.models import *
 from play_pi.views import RadioStationListView, AjaxView, ArtistListView, AlbumListView, PlaylistListView, ArtistView, \
-	PlaylistView, AlbumView, PlayView, StreamView, ControlView, QueueView
+	PlaylistView, AlbumView, PlayView, StreamView, ControlView, QueueView, TrackListView
 
 admin.autodiscover()
 
 urlpatterns = patterns('',
 	url(r'^$', ArtistListView.as_view(), name='home'),
 	url(r'^albums/$', AlbumListView.as_view(), name='albums'),
+	url(r'^tracks/$', TrackListView.as_view(), name='tracks'),
 	url(r'^artist/(?P<artist_id>\d+)/$', ArtistView.as_view(), name='artist'),
 	url(r'^album/(?P<album_id>\d+)/$', AlbumView.as_view(), name='album'),
 	url(r'^radio/$', RadioStationListView.as_view(), name='radios'),

@@ -28,6 +28,16 @@ class BaseGridView(ListView):
 		return super(BaseGridView, self).dispatch(request, *args, **kwargs)
 
 
+class TrackListView(ListView):
+	queryset = Track.objects.all().select_related('artist')
+	template_name = 'track_list.html'
+	paginate_by = 50
+	ordering = (
+		'artist__name',
+		'name',
+	)
+
+
 class QueueView(TemplateView):
 	template_name = 'queue.html'
 
@@ -118,7 +128,8 @@ class PlayView(View):
 	def play_track(self, track_id):
 		track = Track.objects.get(id=track_id)
 		mpd_play([track, ])
-		return HttpResponseRedirect(reverse('album', args=[track.album.id, ]))
+		url = self.request.META.get('HTTP_REFERER', reverse_lazy('queue'))
+		return HttpResponseRedirect(url)
 
 	def play_jump(self, mpd_id):
 		with mpd_client() as client:

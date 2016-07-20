@@ -112,6 +112,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'bootstrap3',
     'debug_toolbar',
     'play_pi')
 
