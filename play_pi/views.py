@@ -31,6 +31,7 @@ class BaseGridView(ListView):
 class TrackListView(ListView):
 	queryset = Track.objects.all().select_related('artist')
 	template_name = 'track_list.html'
+	paginate_by = 50
 	ordering = (
 		'artist__name',
 		'name',
