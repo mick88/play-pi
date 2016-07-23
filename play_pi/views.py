@@ -22,11 +22,6 @@ class BaseGridView(ListView):
 	context_object_name = 'list'
 	template_name = 'grid.html'
 
-	def dispatch(self, request, *args, **kwargs):
-		if not GoogleCredentials.objects.enabled().exists():
-			return render_to_response('error.html', context_instance=RequestContext(request))
-		return super(BaseGridView, self).dispatch(request, *args, **kwargs)
-
 
 class TrackListView(ListView):
 	queryset = Track.objects.all().select_related('artist')
