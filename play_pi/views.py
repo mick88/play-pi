@@ -137,6 +137,12 @@ class PlayView(View):
 		url = self.request.META.get('HTTP_REFERER', reverse_lazy('queue'))
 		return HttpResponseRedirect(url)
 
+	def play_radio_enqueue(self, radio_id):
+		station = RadioStation.objects.get(id=radio_id)
+		mpd_enqueue(station)
+		url = self.request.META.get('HTTP_REFERER', reverse_lazy('queue'))
+		return HttpResponseRedirect(url)
+
 	def play_radio(self, radio_id):
 		station = RadioStation.objects.get(id=radio_id)
 		mpd_play_radio(station)
