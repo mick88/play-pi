@@ -228,7 +228,7 @@ class AjaxView(View):
 
 	def ajax_volume_delta(self, client, value, *args, **kwargs):
 		status = client.status()
-		volume = status['volume']
+		volume = int(status['volume']) + int(value)
 		client.setvol(volume)
 		return client.status()
 
