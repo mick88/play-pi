@@ -18,85 +18,78 @@
 
 <body>
 
-<div id='content'>
-
-
-<header class="jumbotron" id="overview">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8">
-        <h1>Play Pi</h1>
-        <a class='nav-link' href='{% url "queue" %}'>
-            <i class='glyphicon glyphicon-play'></i> Now Playing
-        </a>
-        <a class='nav-link' href='{% url "tracks" %}'>
-            <i class='glyphicon glyphicon-music'></i> Tracks
-        </a>
-        <a class='nav-link' href='{% url "home" %}'>
-            <i class='glyphicon glyphicon-user'></i> Artists
-        </a>
-        <a class='nav-link' href='{% url "albums" %}'>
-            <i class='glyphicon glyphicon-record'></i> Albums
-        </a>
-
-        <a class='nav-link' href='{% url "playlists" %}'>
-            <i class='glyphicon glyphicon-list'></i> Playlists
-        </a>
-
-        <a class='nav-link' href='{% url "radios" %}'>
-            <i class='glyphicon glyphicon-bullhorn'></i> Radio
-        </a>
-      </div>
-      <div class="col-md-4">
-        <div id="current-song">
-          Now playing:<br />
-          <span id="current-song-title"></span><br />
-          <span id="current-song-artist"></span> - <span id="current-song-album"></span><br />
+<nav class="navbar navbar-inverse">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Play Pi</a>
         </div>
-      </div>
-    </div>
-    <div class="row">
-      {% include 'playback_controls.html' %}
-    </div>
-    <div class="row">
-      <div class="col-md-offset-8 col-md-4">
-      {% if view == 'album' and artist %}
-      <ol class="breadcrumb pull-right">
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li class="active">{{ artist.name }}</li>
-      </ol>
-      {% elif view == 'single_playlist' %}
-      <ol class="breadcrumb pull-right">
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'playlists' %}">Playlists</a></li>
-        <li class="active">{{ playlist.name }}</li>
-      </ol>
-      {% elif view == 'single_album' %}
-      <ol class="breadcrumb pull-right">
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'artist' album.artist.id %}">{{ album.artist.name }}</a></li>
-        <li class="active">{{ album.name }}</li>
-      </ol>
-      {% endif %}
-      </div>
-    </div>
-  </div>
-</header>
-<div class='container'>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="{% url "queue" %}">
+                        <i class='glyphicon glyphicon-play'></i> Now Playing
+                    </a>
+                </li>
+                <li>
+                    <a class='nav-link' href='{% url "tracks" %}'>
+                        <i class='glyphicon glyphicon-music'></i> Tracks
+                    </a>
+                </li>
+                <li>
+                    <a class='nav-link' href='{% url "home" %}'>
+                        <i class='glyphicon glyphicon-user'></i> Artists
+                    </a>
+                </li>
+                <li>
+                    <a class='nav-link' href='{% url "albums" %}'>
+                        <i class='glyphicon glyphicon-record'></i> Albums
+                    </a>
+                </li>
 
-{% block content %}
-  Hello World
-{% endblock %}
-<p>Google Play Music Control Station</p>
+                <li>
+                    <a class='nav-link' href='{% url "playlists" %}'>
+                        <i class='glyphicon glyphicon-list'></i> Playlists
+                    </a>
+                </li>
 
+                <li>
+                    <a class='nav-link' href='{% url "radios" %}'>
+                        <i class='glyphicon glyphicon-bullhorn'></i> Radio
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div id='content'>
+    <div class='container'>
+        {% block content %}
+        {% endblock %}
+    </div>
 </div>
 
-</div>
+<footer class="footer navbar-fixed-bottom">
+    <div class="container">
+        <div class="row">
+            {% include 'playback_controls.html' %}
+            {% include 'now_playing.html' %}
+        </div>
+    </div>
+</footer>
 
 {% block scripts %}
     {% bootstrap_javascript jquery=True %}
     <script src="{% get_static_prefix %}js/bootstrap-slider.min.js"></script>
     <script src="{% static 'js/play.js' %}"></script>
 {% endblock %}
+
 </body>
 </html>

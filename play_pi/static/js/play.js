@@ -53,6 +53,12 @@ $(document).ready(function() {
   $("#previous-button").click(function(e) {
     ajax("previous");
   });
+  $("#vol-up-button").click(function(e) {
+    $.get('/ajax/volume_delta/5');
+  });
+  $("#vol-down-button").click(function(e) {
+    $.get('/ajax/volume_delta/-5');
+  });
   var currentTimeout = setTimeout(fetchCurrentlyPlaying, 5000);
   function fetchCurrentlyPlaying() {
     clearTimeout(currentTimeout);

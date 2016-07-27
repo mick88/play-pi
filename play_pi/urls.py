@@ -21,6 +21,6 @@ urlpatterns = patterns('',
 	url(r'^controls/(?P<action>random|repeat|stop)/$', ControlView.as_view(), name='control'),
 	url(r'^get_stream/(?P<track_id>\d+)/$', StreamView.as_view(), name='get_stream'),
 	url(r'^ajax/(?P<method>\w+)/?$', AjaxView.as_view(), name='ajax'),
-	url(r'^ajax/(?P<method>volume)/(?P<value>\d+)/?$', AjaxView.as_view(), name='ajax'),
+	url(r'^ajax/(?P<method>\w+)/(?P<value>[\-\d]+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^admin/', include(admin.site.urls)),
 )

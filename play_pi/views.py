@@ -226,6 +226,12 @@ class AjaxView(View):
 		client.setvol(volume)
 		return client.status()
 
+	def ajax_volume_delta(self, client, value, *args, **kwargs):
+		status = client.status()
+		volume = status['volume']
+		client.setvol(volume)
+		return client.status()
+
 	def ajax_current_song(self, client, *args, **kwargs):
 		try:
 			track = get_currently_playing_track()
