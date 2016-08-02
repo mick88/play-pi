@@ -4,7 +4,6 @@ from gmusicapi import Webclient
 # Django settings for play_pi project.
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 GPLAY_USER = "" # Define these in local_settings.py, not here
 GPLAY_PASS = "" # Define these in local_settings.py, not here
@@ -77,17 +76,22 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '4f)-90h^38b8xr3wsa6fo_8-ot!e1xo__*6pz3g7k(9zqj)s-l'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'play_pi.context_processors.mpd_status',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': {
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'play_pi.context_processors.mpd_status',
+            ],
+        },
+        'DEBUG': True,
+    }
+]
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
