@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 
 from play_pi.models import *
@@ -7,7 +7,7 @@ from play_pi.views import RadioStationListView, AjaxView, ArtistListView, AlbumL
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = [
 	url(r'^$', QueueView.as_view(), name='home'),
 	url(r'^albums/$', AlbumListView.as_view(), name='albums'),
 	url(r'^tracks/$', TrackListView.as_view(), name='tracks'),
@@ -24,4 +24,4 @@ urlpatterns = patterns('',
 	url(r'^ajax/(?P<method>\w+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^ajax/(?P<method>\w+)/(?P<value>[\-\d]+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^admin/', include(admin.site.urls)),
-)
+]
