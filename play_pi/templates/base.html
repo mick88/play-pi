@@ -37,25 +37,33 @@
                         <i class='glyphicon glyphicon-play'></i> Now Playing
                     </a>
                 </li>
-                <li class="{% ifequal view.tab 'tracks'  %}active{% endifequal %}">
-                    <a class='nav-link' href='{% url "tracks" %}'>
-                        <i class='glyphicon glyphicon-music'></i> Tracks
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <img src="{% static 'img/play-music.png' %}" class="grayscale"/> Google Music
+                        <span class="caret"></span>
                     </a>
-                </li>
-                <li class="{% ifequal view.tab 'artists'  %}active{% endifequal %}">
-                    <a class='nav-link' href='{% url "artists" %}'>
-                        <i class='glyphicon glyphicon-user'></i> Artists
-                    </a>
-                </li>
-                <li class="{% ifequal view.tab 'albums'  %}active{% endifequal %}">
-                    <a class='nav-link' href='{% url "albums" %}'>
-                        <i class='glyphicon glyphicon-record'></i> Albums
-                    </a>
-                </li>
-                <li class="{% ifequal view.tab 'playlists'  %}active{% endifequal %}">
-                    <a class='nav-link' href='{% url "playlists" %}'>
-                        <i class='glyphicon glyphicon-list'></i> Playlists
-                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="{% ifequal view.tab 'tracks'  %}active{% endifequal %}">
+                            <a class='nav-link' href='{% url "tracks" %}'>
+                                <i class='glyphicon glyphicon-music'></i> Tracks
+                            </a>
+                        </li>
+                        <li class="{% ifequal view.tab 'artists'  %}active{% endifequal %}">
+                            <a class='nav-link' href='{% url "artists" %}'>
+                                <i class='glyphicon glyphicon-user'></i> Artists
+                            </a>
+                        </li>
+                        <li class="{% ifequal view.tab 'albums'  %}active{% endifequal %}">
+                            <a class='nav-link' href='{% url "albums" %}'>
+                                <i class='glyphicon glyphicon-record'></i> Albums
+                            </a>
+                        </li>
+                        <li class="{% ifequal view.tab 'playlists'  %}active{% endifequal %}">
+                            <a class='nav-link' href='{% url "playlists" %}'>
+                                <i class='glyphicon glyphicon-list'></i> Playlists
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="{% ifequal view.tab 'radios'  %}active{% endifequal %}">
                     <a class='nav-link' href='{% url "radios" %}'>
