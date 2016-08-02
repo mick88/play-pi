@@ -31,10 +31,12 @@ class TrackListView(ListView):
 		'artist__name',
 		'name',
 	)
+	tab = 'tracks'
 
 
 class QueueView(TemplateView):
 	template_name = 'queue.html'
+	tab = 'queue'
 
 	def get_context_data(self, **kwargs):
 		data = super(QueueView, self).get_context_data(**kwargs)
@@ -54,26 +56,29 @@ class QueueView(TemplateView):
 
 class ArtistListView(BaseGridView):
 	model = Artist
+	tab = 'artists'
 
 
 class AlbumListView(BaseGridView):
 	model = Album
+	tab = 'albums'
 
 
 class ArtistView(DetailView):
 	pk_url_kwarg = 'artist_id'
 	model = Artist
 	template_name = 'grid.html'
+	tab = 'artists'
 
 	def get_context_data(self, **kwargs):
 		data = super(ArtistView, self).get_context_data(**kwargs)
 		data['list'] = Album.objects.filter(artist=self.object)
-		data['view'] = 'album'
 		return data
 
 
 class PlaylistListView(BaseGridView):
 	model = Playlist
+	tab = 'playlists'
 
 
 class PlaylistView(DetailView):
@@ -81,11 +86,11 @@ class PlaylistView(DetailView):
 	pk_url_kwarg = 'playlist_id'
 	template_name = 'playlist.html'
 	context_object_name = 'playlist'
+	tab = 'playlist'
 
 	def get_context_data(self, **kwargs):
 		data = super(PlaylistView, self).get_context_data(**kwargs)
 		data['tracks'] = self.object.tracks.select_related('artist')
-		data['view'] = 'single_playlist'
 		return data
 
 
@@ -97,7 +102,6 @@ class AlbumView(DetailView):
 	def get_context_data(self, **kwargs):
 		data = super(AlbumView, self).get_context_data(**kwargs)
 		data['tracks'] = Track.objects.filter(album=self.object).order_by('track_no')
-		data['view'] = 'single_album'
 		return data
 
 
@@ -267,3 +271,4 @@ class AjaxView(View):
 class RadioStationListView(ListView):
 	model = RadioStation
 	template_name = 'radio_list.html'
+	tab = 'radios'

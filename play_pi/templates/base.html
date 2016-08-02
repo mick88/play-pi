@@ -32,34 +32,32 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li>
+                <li class="{% ifequal view.tab 'queue' %}active{% endifequal %}">
                     <a href="{% url "queue" %}">
                         <i class='glyphicon glyphicon-play'></i> Now Playing
                     </a>
                 </li>
-                <li>
+                <li class="{% ifequal view.tab 'tracks'  %}active{% endifequal %}">
                     <a class='nav-link' href='{% url "tracks" %}'>
                         <i class='glyphicon glyphicon-music'></i> Tracks
                     </a>
                 </li>
-                <li>
+                <li class="{% ifequal view.tab 'artists'  %}active{% endifequal %}">
                     <a class='nav-link' href='{% url "home" %}'>
                         <i class='glyphicon glyphicon-user'></i> Artists
                     </a>
                 </li>
-                <li>
+                <li class="{% ifequal view.tab 'albums'  %}active{% endifequal %}">
                     <a class='nav-link' href='{% url "albums" %}'>
                         <i class='glyphicon glyphicon-record'></i> Albums
                     </a>
                 </li>
-
-                <li>
+                <li class="{% ifequal view.tab 'playlists'  %}active{% endifequal %}">
                     <a class='nav-link' href='{% url "playlists" %}'>
                         <i class='glyphicon glyphicon-list'></i> Playlists
                     </a>
                 </li>
-
-                <li>
+                <li class="{% ifequal view.tab 'radios'  %}active{% endifequal %}">
                     <a class='nav-link' href='{% url "radios" %}'>
                         <i class='glyphicon glyphicon-bullhorn'></i> Radio
                     </a>
