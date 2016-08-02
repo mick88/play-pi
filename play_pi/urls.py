@@ -8,9 +8,10 @@ from play_pi.views import RadioStationListView, AjaxView, ArtistListView, AlbumL
 admin.autodiscover()
 
 urlpatterns = patterns('',
-	url(r'^$', ArtistListView.as_view(), name='home'),
+	url(r'^$', QueueView.as_view(), name='home'),
 	url(r'^albums/$', AlbumListView.as_view(), name='albums'),
 	url(r'^tracks/$', TrackListView.as_view(), name='tracks'),
+	url(r'^artists/$', ArtistListView.as_view(), name='artists'),
 	url(r'^artist/(?P<artist_id>\d+)/$', ArtistView.as_view(), name='artist'),
 	url(r'^album/(?P<album_id>\d+)/$', AlbumView.as_view(), name='album'),
 	url(r'^radio/$', RadioStationListView.as_view(), name='radios'),
