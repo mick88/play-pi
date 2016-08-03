@@ -57,6 +57,11 @@ class Command(BaseCommand):
             gpio.setup(channel, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.add_event_detect(channel, gpio.FALLING, bouncetime=250, callback=self.on_button_press)
 
-        print 'Running...'
-        while True:
-            time.sleep(60)
+        print 'Running... Press CTRL+C to stop'
+        try:
+            while True:
+                time.sleep(60)
+        except KeyboardInterrupt:
+            print 'Finished'
+        finally:
+            gpio.cleanup()
