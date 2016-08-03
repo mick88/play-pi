@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
-from django.core.management import BaseCommand
+
+import time
 
 import RPi.GPIO as gpio
-import mpd
-import time
+from django.core.management import BaseCommand
 
 from play_pi.utils import mpd_client
 
