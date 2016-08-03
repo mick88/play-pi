@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 from django.apps.config import AppConfig
-from play_pi.models import GoogleCredentials, RadioStation
 from django.db.utils import OperationalError
 
 
@@ -11,6 +10,7 @@ class PlayPiApp(AppConfig):
     verbose_name = 'Play Pi'
 
     def ready(self):
+        from play_pi.models import RadioStation
         super(PlayPiApp, self).ready()
         Track = self.get_model('Track')
         try:
@@ -21,6 +21,7 @@ class PlayPiApp(AppConfig):
             pass
 
     def get_credentials(self):
+        from play_pi.models import GoogleCredentials
         return GoogleCredentials.objects.enabled().get()
 
     def get_api(self):
