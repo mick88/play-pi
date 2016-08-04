@@ -27,3 +27,9 @@ class GpioButton(models.Model):
     bcm_pin = models.PositiveSmallIntegerField(help_text=mark_safe('Pin number in <a href="https://pinout.xyz/" target="_blank">BCM numbering</a>.'))
     action = models.CharField(max_length=32, choices=get_action_choices())
     enable = models.BooleanField(blank=True, help_text='Enable this button/pin', default=True)
+
+    def __unicode__(self):
+        return '{} ({})'.format(
+            self.get_action_display(),
+            self.bcm_pin,
+        )
