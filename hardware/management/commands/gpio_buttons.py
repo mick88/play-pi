@@ -59,7 +59,7 @@ class Command(BaseCommand):
         for button in buttons:
             gpio.setup(button.bcm_pin, gpio.IN, pull_up_down=gpio.PUD_UP)
             gpio.add_event_detect(button.bcm_pin, gpio.FALLING, bouncetime=250, callback=on_press)
-            self.stdout.write('Setup {} button on BCM {}').format(button.get_action_display(), button.bcm_pin)
+            self.stdout.write('Setup {} button on BCM {}'.format(button.get_action_display(), button.bcm_pin))
 
         if not buttons:
             self.stderr.write('There are no buttons setup. Did you forget to enable buttons in admin?')
