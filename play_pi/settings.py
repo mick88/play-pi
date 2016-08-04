@@ -118,7 +118,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'bootstrap3',
     'debug_toolbar',
-    'play_pi')
+    'play_pi',
+    'hardware',
+)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
