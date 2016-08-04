@@ -18,7 +18,6 @@ def get_action_choices():
         match = pattern.match(member)
         if match:
             action = match.groupdict()['name']
-            method = getattr(Command, member)
             name = action.replace('_', ' ').title()
             choices.append((action, name))
     return choices
