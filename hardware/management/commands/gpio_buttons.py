@@ -76,7 +76,9 @@ class Command(BaseCommand):
             buttons = None
             while True:
                 new_buttons = set(GpioButton.objects.filter(enable=True).values_list('bcm_pin', 'action'))
-                if new_buttons != buttons:
+                if buttons is None:
+                    buttons = new_buttons
+                elif new_buttons != buttons:
                     buttons = new_buttons
                     self.stdout.write('Change detected in button configuration. Reloading...')
                     self.cleanup()
