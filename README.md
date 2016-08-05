@@ -30,9 +30,6 @@ It's highly recommended you use an [application specific password](https://suppo
 `sudo ./manage.py runserver 0.0.0.0:80`
 * You should now be able to access play-pi from your web browser, point it at the IP of your Pi. You can go to `http://192.168.pi.ip/admin` and log in with your credentials to access the admin.
 
-### Migrating from previous version (Django 1.5)
-* run `./manage.py migrate --fake-initial` - this will mark initial migrations as applied and apply any additional migrations
-
 ### Install as apache site
 These instructions assume that the project is located in `/home/pi/src/play-pi` and you have user `pi`. If your setting is different, you will have to edit `play-pi.conf` and adjust the steps accordingly.
 
