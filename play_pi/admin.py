@@ -4,7 +4,7 @@ from play_pi.forms import GoogleCredentialsForm
 
 
 @admin.register(Artist, Album, Track, Playlist, PlaylistConnection, RadioStation)
-class defaultAdmin(admin.ModelAdmin):
+class DefaultAdmin(admin.ModelAdmin):
     pass
 
 
