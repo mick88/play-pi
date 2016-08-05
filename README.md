@@ -13,7 +13,7 @@ A frontend for a [Google Play Music](http://play.google.com/music/) Pi Jukebox. 
 *volume: 80%   repeat: off   random: off   single: off   consume: off*
 There are [futher instructions for setting up/testing mpc](http://www.gmpa.it/it9xxs/?p=727) if you want them.
 * Now clone this repository:
-`git clone git://github.com/fredley/play-pi.git`
+`git clone git://github.com/mick88/play-pi.git`
 `cd play-pi`
 * First, you'll need to update `pip`'s setuptools: `sudo pip install -U setuptools`
 * Next you'll need to use it to install the required python packages:
