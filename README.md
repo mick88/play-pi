@@ -58,3 +58,4 @@ The project is capable of taking input from buttons connected to GPIO pins. You 
     * enable the buttons you are using and leave others disabled
 * Add button handler script to `init.d` on your raspberry pi: `sudo ln -s /home/pi/src/play-pi/radio_buttons.sh /etc/init.d/radio_buttons.sh` - if your project path is different, adjust the command
 * Reboot your Raspberry Pi and your buttons should work
+* **Advanced**: You can add more actions by implementing `on_X_press()` methods in `hardware.management.commands.gpio_buttons.Command`. 
