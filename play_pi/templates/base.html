@@ -62,6 +62,13 @@
                         <i class='glyphicon glyphicon-bullhorn'></i> Radio
                     </a>
                 </li>
+                {% if user.is_staff %}
+                <li>
+                    <a class='nav-link' href='{% url "admin:index" %}' target="_blank">
+                        <i class='glyphicon glyphicon-cog'></i> Admin
+                    </a>
+                </li>
+                {% endif %}
             </ul>
         </div>
     </div>
