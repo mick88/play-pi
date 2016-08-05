@@ -3,9 +3,14 @@ from models import *
 from play_pi.forms import GoogleCredentialsForm
 
 
-@admin.register(Artist, Album, Track, Playlist, PlaylistConnection, RadioStation)
+@admin.register(Artist, Album, Track, Playlist, PlaylistConnection)
 class DefaultAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(RadioStation)
+class RadioStationAdmin(admin.ModelAdmin):
+    list_display = ['name', 'url']
 
 
 @admin.register(GoogleCredentials)
