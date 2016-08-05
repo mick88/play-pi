@@ -11,22 +11,22 @@ class Command(BaseCommand):
     def on_play_press(self, client):
         if client.status().get('state', '') == 'play':
             client.pause()
-            print "Pause"
+            self.stdout.write("Pause")
         else:
             client.play()
-            print "Play"
+            self.stdout.write("Play")
 
     def on_next_press(self, client):
         client.next()
-        print "Next"
+        self.stdout.write("Next")
 
     def on_previous_press(self, client):
         client.previous()
-        print "Previous"
+        self.stdout.write("Previous")
 
     def on_stop_press(self, client):
         client.stop()
-        print "Stopped"
+        self.stdout.write("Stopped")
 
     def on_volume_up_press(self, client):
         status = client.status()
@@ -34,7 +34,7 @@ class Command(BaseCommand):
         if volume > 100:
             volume = 100
         client.setvol(volume)
-        print "Volume set to {}".format(volume)
+        self.stdout.write("Volume set to {}".format(volume))
 
     def on_volume_down_press(self, client):
         status = client.status()
@@ -42,7 +42,7 @@ class Command(BaseCommand):
         if volume < 0:
             volume = 0
         client.setvol(volume)
-        print "Volume set to {}".format(volume)
+        self.stdout.write("Volume set to {}".format(volume))
 
     def setup(self):
         import RPi.GPIO as gpio
@@ -71,10 +71,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             self.setup()
-            print 'Running... Press CTRL+C to stop'
+            self.stdout.write('Running... Press CTRL+C to stop')
             while True:
                 time.sleep(60)
         except KeyboardInterrupt:
-            print 'Finished'
+            self.stdout.write('Finished')
         finally:
             self.cleanup()
