@@ -87,7 +87,7 @@ class Command(BaseCommand):
                         self.setup()
                 except OperationalError:
                     self.stderr.write('OperationalError occured while trying to update button information')
-                time.sleep(10)
+                time.sleep(60)
         except KeyboardInterrupt:
             self.stdout.write('Finished')
         finally:
