@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import time
 
 from django.core.management import BaseCommand
+from django.db.utils import OperationalError
 
 from play_pi.utils import mpd_client
 
@@ -75,14 +76,17 @@ class Command(BaseCommand):
             self.stdout.write('Running... Press CTRL+C to stop')
             buttons = None
             while True:
-                new_buttons = set(GpioButton.objects.filter(enable=True).values_list('bcm_pin', 'action'))
-                if buttons is None:
-                    buttons = new_buttons
-                elif new_buttons != buttons:
-                    buttons = new_buttons
-                    self.stdout.write('Change detected in button configuration. Reloading...')
-                    self.cleanup()
-                    self.setup()
+                try:
+                    new_buttons = set(GpioButton.objects.filter(enable=True).values_list('bcm_pin', 'action'))
+                    if buttons is None:
+                        buttons = new_buttons
+                    elif new_buttons != buttons:
+                        buttons = new_buttons
+                        self.stdout.write('Change detected in button configuration. Reloading...')
+                        self.cleanup()
+                        self.setup()
+                except OperationalError:
+                    self.stderr.write('OperationalError occured while trying to update button information')
                 time.sleep(10)
         except KeyboardInterrupt:
             self.stdout.write('Finished')
