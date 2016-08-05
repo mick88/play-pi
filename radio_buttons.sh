@@ -17,7 +17,7 @@ case "$1" in
   start)
     log_begin_msg "Starting play-pi hardware interface"
     cd /home/pi/src/play-pi
-    source bin/activate
+    . bin/activate
     python manage.py gpio_buttons
     log_end_msg $?
     exit 0
