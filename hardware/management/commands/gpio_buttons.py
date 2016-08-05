@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 import time
 
 from django.core.management import BaseCommand
+from django.core import signals
+from django.db.models.signals import post_save, post_delete
 
 from play_pi.utils import mpd_client
 
@@ -44,6 +46,11 @@ class Command(BaseCommand):
         client.setvol(volume)
         self.stdout.write("Volume set to {}".format(volume))
 
+    def on_button_change(self, *args, **kwargs):
+        self.stdout.write('Model change detected in GpioButtons. Reloading...')
+        self.cleanup()
+        self.setup()
+
     def setup(self):
         import RPi.GPIO as gpio
         from hardware.models import GpioButton
@@ -61,11 +68,17 @@ class Command(BaseCommand):
             gpio.add_event_detect(button.bcm_pin, gpio.FALLING, bouncetime=250, callback=on_press)
             self.stdout.write('Setup {} button on BCM {}'.format(button.get_action_display(), button.bcm_pin))
 
+        post_save.connect(self.on_button_change, sender=GpioButton)
+        post_delete.connect(self.on_button_change, sender=GpioButton)
+
         if not buttons:
             self.stderr.write('There are no buttons setup. Did you forget to enable buttons in admin?')
 
     def cleanup(self):
         import RPi.GPIO as gpio
+        from hardware.models import GpioButton
+        post_save.disconnect(self.on_button_change, sender=GpioButton)
+        post_delete.disconnect(self.on_button_change, sender=GpioButton)
         gpio.cleanup()
 
     def handle(self, *args, **options):
