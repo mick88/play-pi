@@ -40,7 +40,7 @@ Follow steps listed in **Setup/Installation** first to install dependencies and 
 
     ```bash
     sudo ln -s /home/pi/src/play-pi/apache2/play-pi.conf /etc/apache2/sites-available/play-pi.conf
-    sudo ln -s /etc/apache2/sites-available/play-pi.conf /etc/apache2/sites-enabled/play-pi.conf
+    sudo a2ensite play-pi
     ```
 * Collect static files so they can be served by apache `./manage.py collectstatic --noinput`
 * Restart apache `sudo apache2ctl graceful`
