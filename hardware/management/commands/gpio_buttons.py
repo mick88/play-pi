@@ -75,7 +75,7 @@ class Command(BaseCommand):
             self.stdout.write('Running... Press CTRL+C to stop')
             buttons = None
             while True:
-                new_buttons = set(GpioButton.objects.filter(enabled=True).values('bcm_pin', 'action'))
+                new_buttons = set(GpioButton.objects.filter(enable=True).values('bcm_pin', 'action'))
                 if new_buttons != buttons:
                     buttons = new_buttons
                     self.stdout.write('Change detected in button configuration. Reloading...')
