@@ -47,3 +47,14 @@ Follow steps listed in **Setup/Installation** first to install dependencies and 
 * Collect static files so they can be served by apache `./manage.py collectstatic --noinput`
 * Restart apache `sudo apache2ctl graceful`
 * If there are any errors you will find them in the apache error log: `/var/log/apache2/error.log`
+
+
+### Setup hardware interface
+The project is capable of taking input from buttons connected to GPIO pins. You can configure connected buttons and assign them to actions in the admin backend:
+
+* Connect buttons to GPIO pins and ground. If you don't know how to, refer to a [tutorial](http://razzpisampler.oreilly.com/ch07.html).
+* Update button configuration in the admin back-end `/admin/hardware/gpiobutton/`
+    * update BCM channels to the ones where each button is actually connected
+    * enable the buttons you are using and leave others disabled
+* Add button handler script to `init.d` on your raspberry pi: `sudo ln -s /home/pi/src/play-pi/radio_buttons.sh /etc/init.d/radio_buttons.sh` - if your project path is different, adjust the command
+* Reboot your Raspberry Pi and your buttons should work
