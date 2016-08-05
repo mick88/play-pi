@@ -37,6 +37,7 @@ Follow steps listed in **Setup/Installation** first to install dependencies and 
 
 * install apache2 and mod_wsgi: `sudo apt-get install apache2 libapache2-mod-wsgi`
 * Symlink `play-pi.conf` to your sites available and enable:
+
     ```bash
     sudo ln -s /home/pi/src/play-pi/apache2/play-pi.conf /etc/apache2/sites-available/play-pi.conf
     sudo ln -s /etc/apache2/sites-available/play-pi.conf /etc/apache2/sites-enabled/play-pi.conf
