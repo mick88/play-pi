@@ -101,6 +101,10 @@ class RadioStation(models.Model):
 	name = models.CharField(max_length=70)
 	url = models.URLField()
 	mpd_id = models.IntegerField(default=0)
+	order = models.IntegerField(default=0)
 
 	def __unicode__(self):
 		return self.name
+
+	class Meta:
+		ordering = 'order',

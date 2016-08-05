@@ -10,7 +10,8 @@ class DefaultAdmin(admin.ModelAdmin):
 
 @admin.register(RadioStation)
 class RadioStationAdmin(admin.ModelAdmin):
-    list_display = ['name', 'url']
+    list_display = ['name', 'url', 'order']
+    list_editable = ['order']
 
 
 @admin.register(GoogleCredentials)
