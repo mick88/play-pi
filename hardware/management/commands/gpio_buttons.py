@@ -69,11 +69,19 @@ class Command(BaseCommand):
         gpio.cleanup()
 
     def handle(self, *args, **options):
+        from hardware.models import GpioButton
         try:
             self.setup()
             self.stdout.write('Running... Press CTRL+C to stop')
+            buttons = None
             while True:
-                time.sleep(60)
+                new_buttons = set(GpioButton.objects.filter(enabled=True).values('bcm_pin', 'action'))
+                if new_buttons != buttons:
+                    buttons = new_buttons
+                    self.stdout.write('Change detected in button configuration. Reloading...')
+                    self.cleanup()
+                    self.setup()
+                time.sleep(10)
         except KeyboardInterrupt:
             self.stdout.write('Finished')
         finally:
