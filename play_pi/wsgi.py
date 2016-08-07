@@ -34,6 +34,7 @@ application = get_wsgi_application()
 # application = HelloWorldApplication(application)
 
 from werkzeug.contrib.profiler import ProfilerMiddleware, MergeStream
-f = open('profiler.log', 'w')
+dir = os.path.dirname(__file__)
+f = open(os.path.join(dir, 'profiler.log'), 'w')
 stream = MergeStream(sys.stdout, f)
 app = ProfilerMiddleware(application, stream)
