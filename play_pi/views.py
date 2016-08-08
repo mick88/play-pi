@@ -98,6 +98,7 @@ class AlbumView(DetailView):
 	model = Album
 	pk_url_kwarg = 'album_id'
 	template_name = 'album.html'
+	tab = 'albums'
 
 	def get_context_data(self, **kwargs):
 		data = super(AlbumView, self).get_context_data(**kwargs)
