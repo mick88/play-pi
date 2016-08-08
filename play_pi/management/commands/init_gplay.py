@@ -72,11 +72,7 @@ class Command(BaseCommand):
                     album.save()
                     albums.add(album_key)
                 else:
-                    try:
-                        album = Album.objects.get(name=album_name, artist=album_artist)
-                    except Album.DoesNotExist:
-                        self.stderr.write('cannot find album {} by {}'.format(album_key, album_artist))
-                        album=None
+                    album = Album.objects.get(name=album_name, artist=album_artist)
             else:
                 album = None
 
