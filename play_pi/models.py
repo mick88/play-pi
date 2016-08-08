@@ -64,11 +64,21 @@ class BaseMpdTrack(models.Model):
 
 
 class Track(BaseMpdTrack):
+	RATING_NONE = 0
+	RATING_THUMBS_DOWN = 1
+	RATING_THUMBS_UP = 5
+	RATING_CHOICES = (
+		(RATING_NONE, u'No rating'),
+		(RATING_THUMBS_DOWN, u'Thumbs down'),
+		(RATING_THUMBS_UP, u'Thumbs up'),
+	)
+
 	name = models.CharField(max_length=200)
 	artist = models.ForeignKey(Artist)
 	album = models.ForeignKey(Album, null=True, blank=True)
 	stream_id = models.CharField(max_length=100)
 	track_no = models.IntegerField(default=0)
+	rating = models.SmallIntegerField(default=0, choices=RATING_CHOICES)
 
 	@property
 	def art_url(self):

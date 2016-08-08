@@ -80,6 +80,7 @@ class Command(BaseCommand):
                 artist=artist,
                 album=album,
                 name=song['title'],
+                rating=song['rating'],
                 stream_id=song['id'],
                 track_no=song.get('trackNumber', 0)
             )
