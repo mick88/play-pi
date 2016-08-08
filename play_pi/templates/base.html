@@ -10,6 +10,9 @@
 
 {% bootstrap_css %}
 <link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/bootstrap-slider.min.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/4.0.2/bootstrap-material-design.min.css">
 <link rel="stylesheet" type="text/css" href="{% get_static_prefix %}css/style.css" media="screen" />
 
 <link rel="shortcut icon" type="image/x-icon" href="{% get_static_prefix %}img/favicon.ico" />
@@ -93,6 +96,8 @@
 {% block scripts %}
     {% bootstrap_javascript jquery=True %}
     <script src="{% get_static_prefix %}js/bootstrap-slider.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/4.0.2/bootstrap-material-design.iife.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/4.0.2/bootstrap-material-design.umd.min.js"></script>
     <script src="{% static 'js/play.js' %}"></script>
 {% endblock %}
 
