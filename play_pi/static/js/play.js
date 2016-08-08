@@ -19,7 +19,7 @@ $(document).ready(function() {
       fetchCurrentlyPlaying();
       
       if(toggle === "random" || toggle === "repeat"){
-        $("#"+toggle+"-button").toggleClass('btn-highlight');
+        $("#"+toggle+"-button").parent().toggleClass('active');
       }
     });
     return false;
