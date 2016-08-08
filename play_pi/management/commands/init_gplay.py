@@ -130,7 +130,6 @@ class Command(BaseCommand):
         else:
             self.stdout.write(u'no liked songs found in the library.')
 
-
     @transaction.atomic()
     def handle(self, *args, **options):
         app = apps.get_app_config('play_pi')
