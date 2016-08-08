@@ -26,42 +26,59 @@ class Command(BaseCommand):
         self.stdout.write('Downloading {} tracks...'.format(count))
         i = 0
         created_tracks = []
+
+        def get_artist(name, art_url):
+            if name not in artists:
+                artist = Artist.objects.create(
+                    name=name,
+                    art_url=art_url,
+                )
+
+                artists.add(name)
+                return artist
+            else:
+                artist = Artist.objects.get(name=name)
+                return artist
+
         for song in library:
             i += 1
 
             artist_name = song['artist'] or song['albumArtist'] or "Unknown Artist"
 
-            if artist_name not in artists:
-                try:
-                    art_url = song['artistArtRef'][0]['url']
-                except:
-                    art_url = ''
-                artist = Artist.objects.create(
-                    name=artist_name,
-                    art_url=art_url,
-                )
+            try:
+                art_url = song['artistArtRef'][0]['url']
+            except:
+                art_url = ''
 
-                artists.add(artist_name)
-            else:
-                artist = Artist.objects.get(name=artist_name)
-
+            artist = get_artist(artist_name, art_url)
             album_name = song['album']
-            if (album_name, artist_name) not in albums:
-                try:
-                    art_url = song['albumArtRef'][0]['url']
-                except:
-                    art_url = ''
-                album = Album(
-                    name=album_name,
-                    artist=artist,
-                    year=song.get('year', 0),
-                    art_url=art_url,
-                )
 
-                album.save()
-                albums.add((album_name, artist_name))
+            if album_name:
+                album_artist_name = song['albumArtist']
+                album_artist = get_artist(album_artist_name, '') if album_artist_name else None
+                album_key = (album_name, album_artist_name)
+                if album_key not in albums:
+                    try:
+                        art_url = song['albumArtRef'][0]['url']
+                    except:
+                        art_url = ''
+                    album = Album(
+                        name=album_name,
+                        artist=album_artist,
+                        year=song.get('year', 0),
+                        art_url=art_url,
+                    )
+
+                    album.save()
+                    albums.add(album_key)
+                else:
+                    try:
+                        album = Album.objects.get(name=album_name, artist=album_artist)
+                    except Album.DoesNotExist:
+                        self.stderr.write('cannot find album {} by {}'.format(album_key, album_artist))
+                        album=None
             else:
-                album = Album.objects.get(name=album_name, artist=artist)
+                album = None
 
             track = Track(
                 artist=artist,
@@ -72,7 +89,6 @@ class Command(BaseCommand):
             )
             created_tracks.append(track)
             self.stdout.write(u'{}/{} tracks saved'.format(i, count), ending='\r')
-            # self.stdout.write(u'{}/{} tracks saved'.format(i, count), ending='\r')
         self.stdout.write('')
         Track.objects.bulk_create(created_tracks)
         return created_tracks
