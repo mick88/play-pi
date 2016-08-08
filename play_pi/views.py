@@ -60,7 +60,7 @@ class ArtistListView(BaseGridView):
 
 
 class AlbumListView(BaseGridView):
-	model = Album
+	queryset = Album.objects.exclude(name='')
 	tab = 'albums'
 
 
