@@ -138,12 +138,14 @@ a.thumbnail:focus{
     text-align: right;
     background: rgba(0,0,0,0.05);
     border-radius: 5px;
-    padding: 10px;
+    padding: 4px;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
     border: 1px solid rgba(0,0,0,0.1);
 }
+
 #current-song-title {
     font-size: 20px;
+    color: #aaa;
 }
 
 .btn-group {
