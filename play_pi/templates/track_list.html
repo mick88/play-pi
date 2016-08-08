@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
+{% load tracks %}
 
 {% block content %}
     <div class="row">
@@ -13,6 +14,7 @@
                 <th class='play-col'></th>
                 <th>Name</th>
                 <th>Artist</th>
+                <th class="rating-col"></th>
                 <th class='play-col'></th>
             </tr>
             {% for track in object_list %}
@@ -20,7 +22,11 @@
                     <td class='play-col'><a href='{% url "play" 'track' track.id %}#track-{{ track.id }}'>▶</a></td>
                     <td>{{ track.name }}</td>
                     <td>{{ track.artist.name }}</td>
-                    <td class='play-col'><a href='{% url "play" 'track_enqueue' track.id %}#track-{{ track.id }}' title="Enqueue"> + </a>
+                    <td>
+                        {{ track|track_rating_thumb }}
+                    </td>
+                    <td class='play-col'>
+                        <a href='{% url "play" 'track_enqueue' track.id %}#track-{{ track.id }}' title="Enqueue"> + </a>
                     </td>
                 </tr>
             {% endfor %}

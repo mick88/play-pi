@@ -121,6 +121,7 @@ a.thumbnail:focus{
     margin-left:0;
 }
 .play-col,
+.rating-col,
 .num-col {
     width:30px;
 }
@@ -158,4 +159,12 @@ footer {
     width: 100%;
     background-color: #f5f5f5;
     padding: 10px;
+}
+
+.rating-glyph.rating-5 {
+    color: #fb8823;
+}
+
+.rating-glyph.rating-1 {
+    color: #aaa;
 }

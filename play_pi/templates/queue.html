@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load tracks %}
 
 {% block jquery %}
 
@@ -20,6 +21,7 @@
                     <th class='play-col'></th>
                     <th>Name</th>
                     <th>Artist</th>
+                    <th class="rating-col"></th>
                 </tr>
                 {% for track in tracks %}
                     <tr>
@@ -32,6 +34,7 @@
                         </td>
                         <td>{{ track.name }}</td>
                         <td>{{ track.artist }}</td>
+                        <td>{{ track|track_rating_thumb }}</td>
                     </tr>
                 {% endfor %}
             </table>
