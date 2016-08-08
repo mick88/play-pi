@@ -167,3 +167,7 @@ footer {
 .rating-glyph.rating-1 {
     color: #aaa;
 }
+
+.footer li {
+    display: inline-block;
+}
