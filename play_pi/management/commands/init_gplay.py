@@ -80,6 +80,7 @@ class Command(BaseCommand):
                 artist=artist,
                 album=album,
                 name=song['title'],
+                rating=song['rating'],
                 stream_id=song['id'],
                 track_no=song.get('trackNumber', 0)
             )
@@ -111,6 +112,24 @@ class Command(BaseCommand):
             PlaylistConnection.objects.bulk_create(connections)
         self.stdout.write('done')
 
+    def create_thumbs_up_playlist(self):
+        thumbs_up_name = u'Thumbs up'
+        self.stdout.write(u'Creating "Thumbs up" playlist...', ending=' ')
+        if Playlist.objects.filter(name=thumbs_up_name).exists():
+            self.stdout.write(u'Playlist {} already exists'.format(thumbs_up_name))
+            return
+        tracks = Track.objects.filter(rating=Track.RATING_THUMBS_UP)
+        if tracks.exists():
+            playlist = Playlist.objects.create(
+                name=thumbs_up_name,
+            )
+            PlaylistConnection.objects.bulk_create(
+                [PlaylistConnection(track=track, playlist=playlist) for track in tracks]
+            )
+            self.stdout.write(u'created with {} tracks'.format(tracks.count()))
+        else:
+            self.stdout.write(u'no liked songs found in the library.')
+
     @transaction.atomic()
     def handle(self, *args, **options):
         app = apps.get_app_config('play_pi')
@@ -124,6 +143,7 @@ class Command(BaseCommand):
         self.delete_entries()
         self.import_tracks(songs)
         self.import_playlists(playlists)
+        self.create_thumbs_up_playlist()
 
 
 

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load tracks %}
 
 {% block jquery %}
 
@@ -22,6 +23,7 @@
     	<th class='play-col'></th>
     	<th>Name</th>
         <th>Artist</th>
+        <th class='rating-col'></th>
         <th class='play-col'></th>
     </tr>
     {% for track in tracks %}
@@ -29,6 +31,7 @@
       	<td class='play-col'><a href='{% url "play" 'track' track.id %}'>▶</a></td>
       	<td>{{ track.name }}</td>
         <td>{{ track.artist.name }}</td>
+        <td>{{ track|track_rating_thumb }}</td>
         <td class='play-col'><a href='{% url "play" 'track_enqueue' track.id %}' title="Enqueue"> + </a></td>
       </tr>
     {% endfor %}
