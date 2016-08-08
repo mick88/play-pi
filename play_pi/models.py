@@ -38,7 +38,7 @@ class Artist(models.Model):
 
 class Album(models.Model):
 	name = models.CharField(max_length=200)
-	artist = models.ForeignKey(Artist)
+	artist = models.ForeignKey(Artist, null=True, blank=True)
 	year = models.IntegerField(default=0)
 	art_url = models.CharField(max_length=200)
 
@@ -66,7 +66,7 @@ class BaseMpdTrack(models.Model):
 class Track(BaseMpdTrack):
 	name = models.CharField(max_length=200)
 	artist = models.ForeignKey(Artist)
-	album = models.ForeignKey(Album)
+	album = models.ForeignKey(Album, null=True, blank=True)
 	stream_id = models.CharField(max_length=100)
 	track_no = models.IntegerField(default=0)
 
