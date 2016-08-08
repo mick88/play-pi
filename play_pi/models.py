@@ -50,15 +50,25 @@ class Album(models.Model):
 	
 	class Meta:
 		unique_together = ("name", "artist")
-	
 
-class Track(models.Model):
+
+class BaseMpdTrack(models.Model):
+    """
+    Base class for items playable with MPD
+    contains essentials such as mpd id
+    """
+    mpd_id = models.IntegerField(default=0)
+
+    class Meta:
+        abstract = True
+
+
+class Track(BaseMpdTrack):
 	name = models.CharField(max_length=200)
 	artist = models.ForeignKey(Artist)
 	album = models.ForeignKey(Album)
 	stream_id = models.CharField(max_length=100)
 	track_no = models.IntegerField(default=0)
-	mpd_id = models.IntegerField(default=0)
 
 	@property
 	def art_url(self):
@@ -97,10 +107,9 @@ class PlaylistConnection(models.Model):
 		)
 
 
-class RadioStation(models.Model):
+class RadioStation(BaseMpdTrack):
 	name = models.CharField(max_length=70)
 	url = models.URLField()
-	mpd_id = models.IntegerField(default=0)
 	order = models.IntegerField(default=0)
 
 	def __unicode__(self):
