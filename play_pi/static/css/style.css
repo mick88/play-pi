@@ -10,8 +10,7 @@ a:hover{
     color:#FFA659;
     text-decoration: none;
 }
-.btn-highlight,
-.btn-highlight i{
+.active, .active i, #current-song {
     text-shadow: 0 0 5px #fb8823;
     color:#fb8823;
 }
@@ -167,4 +166,8 @@ footer {
 
 .rating-glyph.rating-1 {
     color: #aaa;
+}
+
+.footer li {
+    display: inline-block;
 }
