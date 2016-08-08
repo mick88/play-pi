@@ -23,6 +23,7 @@ def mpd_play(tracks):
         site = Site.objects.get_current()
         base_address = 'http://{}'.format(site.domain)
         client.clear()
+        started = False
         for track in tracks:
             path = reverse('get_stream', args=[track.id, ])
             url = base_address + path
@@ -31,7 +32,9 @@ def mpd_play(tracks):
                 raise ValueError('Could not add {} to queue'.format(track))
             track.mpd_id = mpd_id
             track.save()
-        client.play()
+            if not started:
+                client.play()
+                started = Track
 
 
 def mpd_enqueue(*tracks):
