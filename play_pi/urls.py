@@ -1,11 +1,19 @@
 from django.conf.urls import include, url
 from django.contrib import admin
+from rest_framework import routers
 
 from play_pi.models import *
 from play_pi.views import RadioStationListView, AjaxView, ArtistListView, AlbumListView, PlaylistListView, ArtistView, \
 	PlaylistView, AlbumView, PlayView, StreamView, ControlView, QueueView, TrackListView
 
 admin.autodiscover()
+
+api_router = routers.DefaultRouter()
+
+api = [
+	url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
+	url(r'^', include(api_router.urls)),
+]
 
 urlpatterns = [
 	url(r'^$', QueueView.as_view(), name='home'),
@@ -24,4 +32,5 @@ urlpatterns = [
 	url(r'^ajax/(?P<method>\w+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^ajax/(?P<method>\w+)/(?P<value>[\-\d]+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^admin/', include(admin.site.urls)),
+	url(r'^api/', include(api)),
 ]

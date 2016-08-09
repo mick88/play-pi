@@ -161,6 +161,12 @@ LOGGING = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ]
+}
+
 # MPD deamon settings
 MPD_ADDRESS = 'localhost'
 MPD_PORT = 6600
