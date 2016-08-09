@@ -2,13 +2,15 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework import routers
 
-from play_pi.models import *
+from play_pi.api import TrackViewSet, RadioViewSet
 from play_pi.views import RadioStationListView, AjaxView, ArtistListView, AlbumListView, PlaylistListView, ArtistView, \
 	PlaylistView, AlbumView, PlayView, StreamView, ControlView, QueueView, TrackListView
 
 admin.autodiscover()
 
 api_router = routers.DefaultRouter()
+api_router.register(r'tracks', TrackViewSet)
+api_router.register(r'radio_stations', RadioViewSet)
 
 api = [
 	url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
