@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y mpd mpc python-pip screen python-dev python-setuptools libffi-dev
+    apt-get install -y mpd mpc python-pip screen python-dev python-setuptools libffi-dev postgresql-server-dev-9.3 postgresql-9.3
     echo "snd-bcm2835" >> /etc/modules
     cd /vagrant
     pip install -U setuptools
