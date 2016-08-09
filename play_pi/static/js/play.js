@@ -69,6 +69,7 @@ $(document).ready(function() {
 
       if (data == '{}') {
         $("#current-song").hide();
+        $('#now-playing-popover').hide();
         return;
       }
       
@@ -85,8 +86,10 @@ $(document).ready(function() {
       currentStatus = data.state;
       if((!data.album && !data.title && !data.artist) || currentStatus === "stop") {
         $("#current-song").hide();
+        $('#now-playing-popover').hide();
       } else {
         $("#current-song").show();
+        $('#now-playing-popover').show();
       }
       
       if(currentStatus === "play") {
