@@ -7,11 +7,11 @@
             <li><a id="next-button" href="#"><i class='glyphicon glyphicon-forward'></i></a></li>
             <li><a id="stop-button" href="#"><i class='glyphicon glyphicon-stop'></i></a></li>
 
-            <li class="{% if mpd_status.random == '1' %}active{% endif %}">
+            <li class="hidden-xs {% if mpd_status.random == '1' %}active{% endif %}">
                 <a id="random-button" href="#"><i class='glyphicon glyphicon-random'></i>
                 </a>
             </li>
-            <li class="{% if mpd_status.repeat == '1' %}active{% endif %}">
+            <li class="hidden-xs {% if mpd_status.repeat == '1' %}active{% endif %}">
                 <a id="repeat-button" href="#"><i class='glyphicon glyphicon-repeat'></i>
                 </a>
             </li>
