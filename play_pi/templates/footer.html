@@ -24,6 +24,12 @@
                     <input id="volume-slider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="{{ mpd_status.volume }}"/>
                 </a>
             </li>
+
+            <li class="hidden-lg hidden-md hidden-sm">
+                <a href="#" data-toggle="popover" data-placement="top" data-container="body" data-trigger="hover" id="now-playing-popover" title="Now playing">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </li>
         </ul>
 
         <div class="col-md-6 visible-lg current-song">
