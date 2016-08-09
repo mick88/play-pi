@@ -21,3 +21,4 @@ wsgiref==0.1.2
 django-debug-toolbar==1.4
 django-bootstrap3==7.0.1
 RPi.GPIO==0.6.2
+djangorestframework==3.4.3
