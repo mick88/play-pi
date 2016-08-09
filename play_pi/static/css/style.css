@@ -14,6 +14,11 @@ a:hover{
     text-shadow: 0 0 3px #fb8823;
     color:#fb8823;
 }
+
+.playback-buttons > li.active > a {
+    background: none !important;
+}
+
 .nav-link{
     font-size:16px;
     padding: 8px;
