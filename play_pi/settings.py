@@ -118,6 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'bootstrap3',
     'debug_toolbar',
+    'rest_framework',
     'play_pi',
     'hardware',
 )
