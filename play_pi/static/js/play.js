@@ -19,7 +19,7 @@ $(document).ready(function() {
       fetchCurrentlyPlaying();
       
       if(toggle === "random" || toggle === "repeat"){
-        $("#"+toggle+"-button").toggleClass('btn-highlight');
+        $("#"+toggle+"-button").parent().toggleClass('active');
       }
     });
     return false;
@@ -69,6 +69,7 @@ $(document).ready(function() {
 
       if (data == '{}') {
         $("#current-song").hide();
+        $('#now-playing-popover').hide();
         return;
       }
       
@@ -76,11 +77,19 @@ $(document).ready(function() {
       $("#current-song-album").text(data.album);
       $("#current-song-title").text(data.title);
       $("#current-song-artist").text(data.artist);
+      if (data.artist) {
+        var title = data.artist + " - " + data.title;
+      } else {
+        var title = data.title;
+      }
+      $('#now-playing-popover').attr('data-content', title);
       currentStatus = data.state;
       if((!data.album && !data.title && !data.artist) || currentStatus === "stop") {
         $("#current-song").hide();
+        $('#now-playing-popover').hide();
       } else {
         $("#current-song").show();
+        $('#now-playing-popover').show();
       }
       
       if(currentStatus === "play") {
@@ -111,3 +120,7 @@ $('#volume-slider').on('slideStop', function (event) {
     var volume = event.value;
     $.get('/ajax/volume/' + volume);
 });
+
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})

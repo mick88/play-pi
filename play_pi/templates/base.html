@@ -84,14 +84,7 @@
     </div>
 </div>
 
-<footer class="footer navbar-fixed-bottom">
-    <div class="container">
-        <div class="row">
-            {% include 'playback_controls.html' %}
-            {% include 'now_playing.html' %}
-        </div>
-    </div>
-</footer>
+{% include 'footer.html' %}
 
 {% block scripts %}
     {% bootstrap_javascript jquery=True %}

@@ -86,7 +86,7 @@ class PlaylistView(DetailView):
 	pk_url_kwarg = 'playlist_id'
 	template_name = 'playlist.html'
 	context_object_name = 'playlist'
-	tab = 'playlist'
+	tab = 'playlists'
 
 	def get_context_data(self, **kwargs):
 		data = super(PlaylistView, self).get_context_data(**kwargs)
@@ -98,6 +98,7 @@ class AlbumView(DetailView):
 	model = Album
 	pk_url_kwarg = 'album_id'
 	template_name = 'album.html'
+	tab = 'albums'
 
 	def get_context_data(self, **kwargs):
 		data = super(AlbumView, self).get_context_data(**kwargs)
