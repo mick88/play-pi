@@ -11,13 +11,21 @@ a:hover{
     text-decoration: none;
 }
 .active, .active i, #current-song {
-    text-shadow: 0 0 5px #fb8823;
+    text-shadow: 0 0 3px #fb8823;
     color:#fb8823;
 }
 .nav-link{
     font-size:16px;
     padding: 8px;
     color:#222;
+}
+
+.slider-handle {
+    background: #fb8823;
+}
+
+.slider-selection {
+    background: rgba(251, 136, 35, 0.5);
 }
 
 h1 {
