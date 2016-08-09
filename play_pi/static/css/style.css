@@ -184,3 +184,7 @@ footer {
 .footer li {
     display: inline-block;
 }
+
+footer .popover {
+    color: #555;
+}

@@ -1,0 +1,42 @@
+<footer class="footer navbar-fixed-bottom navbar-inverse">
+    <div class="container">
+        <ul class="nav navbar-nav playback-buttons">
+            <li><a id="previous-button" href="#"><i class='glyphicon glyphicon-backward'></i></a></li>
+            <li id="play-button" style="display: none;"><a href="#"><i class='glyphicon glyphicon-play'></i></a></li>
+            <li><a id="pause-button" href="#"><i class='glyphicon glyphicon-pause'></i></a></li>
+            <li><a id="next-button" href="#"><i class='glyphicon glyphicon-forward'></i></a></li>
+            <li><a id="stop-button" href="#"><i class='glyphicon glyphicon-stop'></i></a></li>
+
+            <li class="hidden-xs {% if mpd_status.random == '1' %}active{% endif %}">
+                <a id="random-button" href="#"><i class='glyphicon glyphicon-random'></i>
+                </a>
+            </li>
+            <li class="hidden-xs {% if mpd_status.repeat == '1' %}active{% endif %}">
+                <a id="repeat-button" href="#"><i class='glyphicon glyphicon-repeat'></i>
+                </a>
+            </li>
+
+            <li class="hidden-lg hidden-md hidden-sm"><a id="vol-down-button" href="#"><i class='glyphicon glyphicon-volume-down'></i></a></li>
+            <li class="hidden-lg hidden-md hidden-sm"><a id="vol-up-button" href="#"><i class='glyphicon glyphicon-volume-up'></i></a></li>
+            <li class="visible-lg visible-md visible-sm">
+                <a href="#">
+                    <i class='glyphicon glyphicon-volume-up icon-white'></i>
+                    <input id="volume-slider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="100" data-slider-step="1" data-slider-value="{{ mpd_status.volume }}"/>
+                </a>
+            </li>
+
+            <li class="hidden-lg">
+                <a href="#" data-toggle="popover" data-placement="top" data-container="footer" data-trigger="hover" id="now-playing-popover" title="Now playing">
+                    <i class='glyphicon glyphicon-info-sign'></i>
+                </a>
+            </li>
+        </ul>
+
+        <div class="col-lg-6 visible-lg current-song">
+            <div id="current-song">
+                <span id="current-song-artist"></span>
+                <span id="current-song-title"></span>
+            </div>
+        </div>
+    </div>
+</footer>

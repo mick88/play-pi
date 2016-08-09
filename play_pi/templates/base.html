@@ -81,17 +81,7 @@
     </div>
 </div>
 
-<footer class="footer navbar-fixed-bottom navbar-inverse">
-    <div class="container">
-        {% include 'playback_controls.html' %}
-        <div class="col-md-6 visible-lg current-song">
-            <div id="current-song">
-                <span id="current-song-artist"></span>
-                <span id="current-song-title"></span>
-            </div>
-        </div>
-    </div>
-</footer>
+{% include 'footer.html' %}
 
 {% block scripts %}
     {% bootstrap_javascript jquery=True %}
