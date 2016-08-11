@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework import routers
 
-from play_pi.api import TrackViewSet, RadioViewSet
+from play_pi.api.views import TrackViewSet, RadioViewSet
 from play_pi.views import RadioStationListView, AjaxView, ArtistListView, AlbumListView, PlaylistListView, ArtistView, \
 	PlaylistView, AlbumView, PlayView, StreamView, ControlView, QueueView, TrackListView
 
