@@ -172,6 +172,20 @@ REST_FRAMEWORK = {
 MPD_ADDRESS = 'localhost'
 MPD_PORT = 6600
 
+
+def should_show_debug_toolbar(request):
+    """
+    Custom logic to showing debug toolbar
+    Enables toolbar when developing using vagrant (client ip is not localhost)
+    Original: debug_toolbar.middleware.show_toolbar
+    """
+    from django.conf import settings
+    return bool(settings.DEBUG) and not request.is_ajax()
+
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': should_show_debug_toolbar,
+}
+
 try:
     from local_settings import *
 except ImportError:
