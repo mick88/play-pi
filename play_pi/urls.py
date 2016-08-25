@@ -3,8 +3,7 @@ from django.contrib import admin
 from rest_framework import routers
 
 from play_pi.api.views import *
-from play_pi.views import RadioStationListView, AjaxView, ArtistListView, AlbumListView, PlaylistListView, ArtistView, \
-	PlaylistView, AlbumView, PlayView, StreamView, ControlView, QueueView, TrackListView
+from play_pi.views import *
 
 admin.autodiscover()
 
@@ -16,6 +15,7 @@ api_router.register(r'playlists', PlaylistViewSet)
 
 api = [
 	url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
+	url(r'^mpd_status/$', MpdStatusViewSet.as_view()),
 	url(r'^', include(api_router.urls)),
 ]
 
