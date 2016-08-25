@@ -43,7 +43,7 @@ class MpdStatusSerializer(serializers.Serializer):
     consume = serializers.BooleanField(required=False)
     playlist = serializers.IntegerField(required=False)
     playlistlength = serializers.IntegerField(required=False)
-    state = serializers.CharField(required=False)
+    state = serializers.ChoiceField(required=False, choices=['play', 'stop', 'pause'])
     song = serializers.IntegerField(required=False)
     songid = serializers.IntegerField(required=False)
     nextsong = serializers.IntegerField(required=False)
