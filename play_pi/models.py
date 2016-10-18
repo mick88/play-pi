@@ -2,6 +2,7 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import QuerySet
+from sortedm2m.fields import SortedManyToManyField
 
 
 class CredentialsQuerySet(QuerySet):
@@ -91,7 +92,7 @@ class Track(BaseMpdTrack):
 class Playlist(models.Model):
 	name = models.CharField(max_length=200)
 	pid = models.CharField(max_length=200)
-	tracks = models.ManyToManyField(Track, through='PlaylistConnection', related_name='playlists')
+	tracks = SortedManyToManyField(Track, through='PlaylistConnection', related_name='playlists')
 
 	def __unicode__(self):
 		return self.name
@@ -109,6 +110,9 @@ class Playlist(models.Model):
 class PlaylistConnection(models.Model):
 	track = models.ForeignKey(Track)
 	playlist = models.ForeignKey(Playlist)
+	sort_value = models.IntegerField(default=0)
+
+	_sort_field_name = 'sort_value'
 
 	def __unicode__(self):
 		return u'{playlist} / {track}'.format(
