@@ -73,3 +73,6 @@ class MockMpdClient(MPDClient):
         }
         self.PLAYLIST.insert(position, item)
         return position
+
+    def clear(self):
+        del self.PLAYLIST[:]

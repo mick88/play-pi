@@ -93,3 +93,9 @@ class QueueView(APIView):
             return self.render_queue(client)
         else:
             return Response(serializer.errors, status=401)
+
+    def delete(self, request):
+        """Delete = clear queue"""
+        with mpd_client() as client:
+            client.clear()
+            return self.render_queue(client)
