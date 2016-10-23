@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 from mpd import MPDClient
 
+from api.serializers import MPD_PAUSE,MPD_PLAY, MPD_STOP
+
 
 class MockMpdClient(MPDClient):
     """
@@ -15,7 +17,7 @@ class MockMpdClient(MPDClient):
         'consume': False,
         'song': 0,
         'random': False,
-        'state': u'play',
+        'state': MPD_PLAY,
         'elapsed': u'5373.756',
         'volume': 51,
         'single': False,
@@ -27,12 +29,19 @@ class MockMpdClient(MPDClient):
 
     def __init__(self, use_unicode=False):
         super(MockMpdClient, self).__init__(use_unicode)
-        # Make a new copy of dict for each client instance
-        self.status_data = self.status_data.copy()
         # Create setters for fields to override MPD methods
-        for field_name in self.status_data:
+        for field_name in 'repeat', 'consume', 'random', 'single':
             setter = self.create_setter(field_name)
             setattr(self, field_name, setter)
+
+    def setvol(self, volume):
+        self.status_data['volume'] = volume
+
+    def pause(self, pause):
+        self.status_data['state'] = MPD_PAUSE if pause else MPD_PLAY
+
+    def stop(self):
+        self.status_data['state'] = MPD_STOP
 
     def create_setter(self, field_name):
         """ Creates a setter method for the field and returns it """
@@ -42,10 +51,10 @@ class MockMpdClient(MPDClient):
         return setter
 
     def connect(self, host, port, timeout=None):
-        pass
+        self.status_data = self.status_data.copy()
 
     def disconnect(self):
-        pass
+        del self.status_data
 
     def status(self):
         return self.status_data
