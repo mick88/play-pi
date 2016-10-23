@@ -51,10 +51,10 @@ class MockMpdClient(MPDClient):
         return setter
 
     def connect(self, host, port, timeout=None):
-        self.status_data = self.status_data.copy()
+        pass
 
     def disconnect(self):
-        del self.status_data
+        pass
 
     def status(self):
         return self.status_data
