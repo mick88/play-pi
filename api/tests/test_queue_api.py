@@ -31,6 +31,7 @@ class TestQueueApi(APITestCase):
 
     def test_enqueue_track(self):
         track = mommy.make(Track)
+        self.assertFalse(track.mpd_id)
 
         MockMpdClient.PLAYLIST = []
         self.assertFalse(MockMpdClient.PLAYLIST)
@@ -43,6 +44,8 @@ class TestQueueApi(APITestCase):
         response = self.client.post(self.url, data=data)
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(MockMpdClient.PLAYLIST))
+        track = Track.objects.get(pk=track.pk)
+        self.assertTrue(track.mpd_id)
 
     def test_enqueue_radio(self):
         radio_station = mommy.make(RadioStation)
@@ -59,7 +62,6 @@ class TestQueueApi(APITestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(MockMpdClient.PLAYLIST))
 
-
     def test_delete_queue(self):
         self.assertTrue(MockMpdClient.PLAYLIST)
 
@@ -67,3 +69,32 @@ class TestQueueApi(APITestCase):
         self.assertEqual(200, response.status_code)
 
         self.assertEqual(0, len(MockMpdClient.PLAYLIST))
+
+    def test_delete_track(self):
+        track = {'pos': '0', 'file': 'http://localhost:8000/get_stream/2002/', 'id': '144'}
+        MockMpdClient.PLAYLIST.append(track)
+        self.assertTrue(track in MockMpdClient.PLAYLIST)
+
+        url = reverse('api:queue', kwargs={'position': 144})
+        response = self.client.delete(url)
+        self.assertEqual(200, response.status_code)
+
+        self.assertFalse(track in MockMpdClient.PLAYLIST)
+
+    def test_track_insert(self):
+        track = mommy.make(Track)
+        self.assertFalse(track.mpd_id)
+        self.assertTrue(MockMpdClient.PLAYLIST)
+
+        data = {
+            'track': {
+                'id': track.id,
+            },
+        }
+
+        self.assertTrue(MockMpdClient.PLAYLIST)
+        url = reverse('api:queue', kwargs={'position': 0})
+        response = self.client.post(url, data=data)
+        self.assertEqual(200, response.status_code)
+        track = Track.objects.get(pk=track.pk)
+        self.assertEqual(track.mpd_id, MockMpdClient.PLAYLIST[0]['id'])

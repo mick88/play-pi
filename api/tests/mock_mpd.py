@@ -72,7 +72,12 @@ class MockMpdClient(MPDClient):
             'file': url,
         }
         self.PLAYLIST.insert(position, item)
-        return position
+        return position + 1
 
     def clear(self):
         del self.PLAYLIST[:]
+
+    def deleteid(self, mpd_id):
+        for item in self.PLAYLIST:
+            if item['id'] == mpd_id:
+                self.PLAYLIST.remove(item)

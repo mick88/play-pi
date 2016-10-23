@@ -81,21 +81,29 @@ class QueueView(APIView):
         serializer = QueueItemSerializer(many=True, instance=items)
         return Response(serializer.data)
 
-    def get(self, request):
+    def get(self, request, position=None):
         with mpd_client() as client:
             return self.render_queue(client)
 
-    def post(self, request):
+    def post(self, request, position=None):
         serializer = QueueItemSerializer(data=request.data, partial=True)
         if serializer.is_valid():
             with mpd_client() as client:
-                serializer.enqueue(client)
+                if position is not None:
+                    position = int(position)
+                serializer.enqueue(client, position)
             return self.render_queue(client)
         else:
             return Response(serializer.errors, status=401)
 
-    def delete(self, request):
-        """Delete = clear queue"""
+    def delete(self, request, position=None):
+        """
+        Delete = clear queue / remove track
+        position arg is used as mpd_id in this case
+        """
         with mpd_client() as client:
-            client.clear()
+            if position is None:
+                client.clear()
+            else:
+                client.deleteid(position)
             return self.render_queue(client)
