@@ -57,3 +57,26 @@ class MpdStatusViewSet(APIView):
             return self.render_status_json_response(status)
         else:
             return Response(serializer.data)
+
+
+class QueueView(APIView):
+    """
+    Endpoint for managing API queue
+    """
+    permission_classes = [
+        IsAuthenticatedOrReadOnly,
+    ]
+
+    def get(self, request):
+        with mpd_client() as client:
+            playlist = client.playlistinfo()
+        ids = tuple(int(song['id']) for song in playlist)
+        tracks = list(Track.objects.filter(mpd_id__in=ids).select_related('artist'))
+        radios = list(RadioStation.objects.filter(mpd_id__in=ids))
+        items = sorted(tracks + radios, key=lambda track: ids.index(track.mpd_id))
+        items = [{
+            'mpd_id': item.mpd_id,
+            'track' if isinstance(item, Track) else 'radio_station': item,
+        } for item in items]
+        serializer = QueueItemSerializer(many=True, instance=items)
+        return Response(serializer.data)

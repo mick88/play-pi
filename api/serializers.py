@@ -97,3 +97,9 @@ class MpdStatusSerializer(serializers.Serializer):
                         raise ValueError('Unknown action for {}.'.format(key))
 
             return client.status()
+
+
+class QueueItemSerializer(serializers.Serializer):
+    mpd_id = serializers.IntegerField()
+    track = TrackSerializer(required=False)
+    radio_station = RadioSerializer(required=False)
