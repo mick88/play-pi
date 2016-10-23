@@ -120,6 +120,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'rest_framework',
     'play_pi',
+    'api',
     'hardware',
 )
 

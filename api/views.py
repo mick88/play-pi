@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from play_pi.api.serializers import *
+from api.serializers import *
 from play_pi.utils import mpd_client
 
 

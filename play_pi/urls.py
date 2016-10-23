@@ -2,22 +2,10 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework import routers
 
-from play_pi.api.views import *
+from api.views import *
 from play_pi.views import *
 
 admin.autodiscover()
-
-api_router = routers.DefaultRouter()
-api_router.register(r'tracks', TrackViewSet)
-api_router.register(r'radio_stations', RadioViewSet)
-api_router.register(r'albums', AlbumViewSet)
-api_router.register(r'playlists', PlaylistViewSet)
-
-api = [
-	url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
-	url(r'^mpd_status/$', MpdStatusViewSet.as_view()),
-	url(r'^', include(api_router.urls)),
-]
 
 urlpatterns = [
 	url(r'^$', QueueView.as_view(), name='home'),
@@ -36,5 +24,5 @@ urlpatterns = [
 	url(r'^ajax/(?P<method>\w+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^ajax/(?P<method>\w+)/(?P<value>[\-\d]+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^admin/', include(admin.site.urls)),
-	url(r'^api/', include(api)),
+	url(r'^api/', include('api.urls')),
 ]
