@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from rest_framework import serializers
 
 from play_pi.models import *
-from play_pi.utils import mpd_client
+from play_pi.utils import mpd_client, mpd_play
 
 MPD_PAUSE = 'pause'
 MPD_STOP = 'stop'
@@ -100,6 +100,28 @@ class MpdStatusSerializer(serializers.Serializer):
 
 
 class QueueItemSerializer(serializers.Serializer):
-    mpd_id = serializers.IntegerField()
+    mpd_id = serializers.IntegerField(read_only=True)
     track = TrackSerializer(required=False)
     radio_station = RadioSerializer(required=False)
+
+    def enqueue(self, client, position=None):
+        """Enqueue this item"""
+        data = self.initial_data
+        if 'track' in data:
+            item = Track.objects.get(id=data['track']['id'])
+            site = Site.objects.get_current()
+            url = 'http://{domain}{stream}'.format(
+                domain=site.domain,
+                stream=reverse('get_stream', args=[item.id, ])
+            )
+        elif 'radio_station' in data:
+            item = RadioStation.objects.get(id=data['radio_station']['id'])
+            url = item.url
+        else:
+            return None
+
+        item.mpd_id = client.addid(url, position)
+        if item.mpd_id is None:
+            raise ValueError('Could not add {} to queue'.format(item))
+        item.save()
+        return item

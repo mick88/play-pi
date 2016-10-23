@@ -167,6 +167,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ],
     'PAGE_SIZE': 50,
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
 # MPD deamon settings

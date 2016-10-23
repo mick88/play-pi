@@ -61,22 +61,35 @@ class MpdStatusViewSet(APIView):
 
 class QueueView(APIView):
     """
-    Endpoint for managing API queue
+    Endpoint for managing API queue.
+    POSTing queue items to this url adds them to the queue.
     """
     permission_classes = [
         IsAuthenticatedOrReadOnly,
     ]
 
-    def get(self, request):
-        with mpd_client() as client:
-            playlist = client.playlistinfo()
+    def render_queue(self, client):
+        playlist = client.playlistinfo()
         ids = tuple(int(song['id']) for song in playlist)
         tracks = list(Track.objects.filter(mpd_id__in=ids).select_related('artist'))
         radios = list(RadioStation.objects.filter(mpd_id__in=ids))
         items = sorted(tracks + radios, key=lambda track: ids.index(track.mpd_id))
         items = [{
-            'mpd_id': item.mpd_id,
-            'track' if isinstance(item, Track) else 'radio_station': item,
-        } for item in items]
+                     'mpd_id': item.mpd_id,
+                     'track' if isinstance(item, Track) else 'radio_station': item,
+                 } for item in items]
         serializer = QueueItemSerializer(many=True, instance=items)
         return Response(serializer.data)
+
+    def get(self, request):
+        with mpd_client() as client:
+            return self.render_queue(client)
+
+    def post(self, request):
+        serializer = QueueItemSerializer(data=request.data, partial=True)
+        if serializer.is_valid():
+            with mpd_client() as client:
+                serializer.enqueue(client)
+            return self.render_queue(client)
+        else:
+            return Response(serializer.errors, status=401)
