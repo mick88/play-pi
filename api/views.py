@@ -31,7 +31,8 @@ class AlbumViewSet(viewsets.ModelViewSet):
 
 class MpdStatusViewSet(APIView):
     """
-    Provides low-level communication with MPD service
+    Provides low-level communication with MPD service.
+    POST to this endpoint to update values with any non-null fields
     """
     permission_classes = [
         IsAuthenticatedOrReadOnly,
