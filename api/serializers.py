@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from rest_framework import serializers
 
 from play_pi.models import *
+from play_pi.utils import mpd_client
 
 
 class ArtistSerializer(serializers.ModelSerializer):
@@ -37,10 +38,10 @@ class RadioSerializer(serializers.ModelSerializer):
 
 class MpdStatusSerializer(serializers.Serializer):
     volume = serializers.IntegerField(required=False)
-    repeat = serializers.BooleanField(required=False)
-    random = serializers.BooleanField(required=False)
-    single = serializers.BooleanField(required=False)
-    consume = serializers.BooleanField(required=False)
+    repeat = serializers.NullBooleanField(required=False)
+    random = serializers.NullBooleanField(required=False)
+    single = serializers.NullBooleanField(required=False)
+    consume = serializers.NullBooleanField(required=False)
     playlist = serializers.IntegerField(required=False)
     playlistlength = serializers.IntegerField(required=False)
     state = serializers.ChoiceField(required=False, choices=['play', 'stop', 'pause'])
@@ -56,3 +57,12 @@ class MpdStatusSerializer(serializers.Serializer):
     mixrampdb = serializers.FloatField(required=False)
     audio = serializers.CharField(required=False)
     error = serializers.CharField(required=False)
+
+    def create(self, validated_data):
+        with mpd_client() as client:
+            for key, value in validated_data.items():
+                if value is not None:
+                    setter = getattr(client, key)
+                    setter(value)
+
+            return client.status()

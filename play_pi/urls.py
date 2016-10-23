@@ -24,5 +24,5 @@ urlpatterns = [
 	url(r'^ajax/(?P<method>\w+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^ajax/(?P<method>\w+)/(?P<value>[\-\d]+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^admin/', include(admin.site.urls)),
-	url(r'^api/', include('api.urls')),
+	url(r'^api/', include('api.urls', namespace='api')),
 ]

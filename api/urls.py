@@ -12,6 +12,6 @@ api_router.register(r'playlists', PlaylistViewSet)
 
 urlpatterns = [
     url(r'^auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^mpd_status/$', MpdStatusViewSet.as_view()),
+    url(r'^mpd_status/$', MpdStatusViewSet.as_view(), name='mpd_status'),
     url(r'^', include(api_router.urls)),
 ]

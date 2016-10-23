@@ -37,8 +37,21 @@ class MpdStatusViewSet(APIView):
         IsAuthenticatedOrReadOnly,
     ]
 
-    def get(self, request):
-        with mpd_client() as client:
-            status = client.status()
+    def render_status_json_response(self, status):
+        """
+        renders status json response
+        """
         serializer = MpdStatusSerializer(instance=status)
         return Response(serializer.data)
+
+    def get(self, request):
+        with mpd_client() as client:
+            return self.render_status_json_response(client.status())
+
+    def post(self, request):
+        serializer = MpdStatusSerializer(data=request.data)
+        if serializer.is_valid():
+            status = serializer.save()
+            return self.render_status_json_response(status)
+        else:
+            return Response(serializer.data)
