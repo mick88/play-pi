@@ -66,13 +66,14 @@ class MockMpdClient(MPDClient):
     def addid(self, url, position=None):
         if position is None:
             position = len(self.PLAYLIST)
+        mpd_id = position + 1
         item = {
             'pos': position,
-            'id': position,
+            'id': mpd_id,
             'file': url,
         }
         self.PLAYLIST.insert(position, item)
-        return position + 1
+        return mpd_id
 
     def clear(self):
         del self.PLAYLIST[:]
