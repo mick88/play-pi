@@ -70,7 +70,7 @@ class MpdStatusSerializer(serializers.Serializer):
     SETTERS = {
         'volume': 'setvol',
         'state': lambda client, state: {
-            MPD_PLAY: lambda : client.pause(0),
+            MPD_PLAY: lambda : client.play(),
             MPD_PAUSE: lambda : client.pause(1),
             MPD_STOP: lambda : client.stop(),
         }[state](),
