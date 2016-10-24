@@ -12,6 +12,7 @@ MPD_PLAY = 'play'
 class ArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
+        fields = '__all__'
 
 
 class AlbumSerializer(serializers.ModelSerializer):
@@ -19,6 +20,7 @@ class AlbumSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Album
+        fields = '__all__'
 
 
 class TrackSerializer(serializers.ModelSerializer):
@@ -27,17 +29,20 @@ class TrackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Track
+        fields = '__all__'
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
     tracks = TrackSerializer(many=True)
     class Meta:
         model = Playlist
+        fields = '__all__'
 
 
 class RadioSerializer(serializers.ModelSerializer):
     class Meta:
         model = RadioStation
+        fields = '__all__'
 
 
 class MpdStatusSerializer(serializers.Serializer):
