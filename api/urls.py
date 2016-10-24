@@ -15,5 +15,6 @@ urlpatterns = [
     url(r'^mpd_status/$', MpdStatusViewSet.as_view(), name='mpd_status'),
     url(r'^queue/(?P<position>\d+)/$', QueueView.as_view(), name='queue'),
     url(r'^queue/$', QueueView.as_view(), name='queue'),
+    url(r'^play/(?P<content_type>tracks|radios)$', PlayView.as_view(), name='play'),
     url(r'^', include(api_router.urls)),
 ]

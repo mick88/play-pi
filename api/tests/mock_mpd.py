@@ -81,3 +81,6 @@ class MockMpdClient(MPDClient):
         for item in self.PLAYLIST:
             if item['id'] == mpd_id:
                 self.PLAYLIST.remove(item)
+
+    def play(self):
+        self.pause(0)

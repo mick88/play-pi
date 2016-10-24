@@ -98,3 +98,32 @@ class TestQueueApi(APITestCase):
         self.assertEqual(200, response.status_code)
         track = Track.objects.get(pk=track.pk)
         self.assertEqual(track.mpd_id, MockMpdClient.PLAYLIST[0]['id'])
+
+    def test_play_tracks(self):
+        del MockMpdClient.PLAYLIST[:]
+        tracks = mommy.make(Track, _quantity=3)
+        self.assertEqual(3, Track.objects.filter(mpd_id=0).count())
+        self.assertFalse(MockMpdClient.PLAYLIST)
+
+        url = reverse('api:play', kwargs=dict(content_type='tracks'))
+        data = [{'id': track.id} for track in tracks]
+
+        response = self.client.post(url, data=data)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(3, len(MockMpdClient.PLAYLIST))
+        self.assertEqual(0, Track.objects.filter(mpd_id=0).count())
+
+    def test_play_radios(self):
+        del MockMpdClient.PLAYLIST[:]
+        RadioStation.objects.all().delete()
+        radios = mommy.make(RadioStation, _quantity=3)
+        self.assertEqual(3, RadioStation.objects.filter(mpd_id=0).count())
+        self.assertFalse(MockMpdClient.PLAYLIST)
+
+        url = reverse('api:play', kwargs=dict(content_type='radios'))
+        data = [{'id': track.id} for track in radios]
+
+        response = self.client.post(url, data=data)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(3, len(MockMpdClient.PLAYLIST))
+        self.assertEqual(0, RadioStation.objects.filter(mpd_id=0).count())

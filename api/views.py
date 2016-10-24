@@ -1,11 +1,15 @@
 from __future__ import unicode_literals
 
+from django.http.response import Http404
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.decorators import detail_route, list_route
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from validate import ValidateError
 
 from api.serializers import *
+from play_pi import utils
 from play_pi.utils import mpd_client
 
 
@@ -107,3 +111,43 @@ class QueueView(APIView):
             else:
                 client.deleteid(position)
             return self.render_queue(client)
+
+
+class PlayView(APIView):
+    """
+    POST to this endpoint to clear queue and start playing new items.
+    /api/play/tracks - POST list of Tracks
+    /api/play/radios - POST list of RadioStations
+    The current playlist will be cleared, populated with posted items, and played
+    """
+    http_method_names = 'post',
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def play(self, items):
+        with mpd_client() as client:
+            client.clear()
+            utils.mpd_client_enqueue(client, *items)
+            client.play()
+
+    def post(self, request, content_type):
+        if content_type not in ('tracks', 'radios'):
+            raise ValidateError('Content type {content_type} is not supported by this API.'.format(
+                content_type=content_type,
+            ))
+        if content_type == 'tracks':
+            model = Track
+            serializer_class = TrackSerializer
+        else:
+            model = RadioStation
+            serializer_class = RadioSerializer
+        serializer = serializer_class(data=request.data, many=True, partial=True)
+        serializer.is_valid(raise_exception=True)
+        ids = tuple(item['id'] for item in request.data)
+        items = model.objects.filter(pk__in=ids).order_by()
+        # order items in the same order as POSTed
+        items = sorted(items, key=lambda item: ids.index(item.id))
+        self.play(items)
+        serializer = serializer_class(instance=items, many=True)
+        return Response(data=serializer.data)
