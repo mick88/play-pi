@@ -63,6 +63,9 @@ Available methods
     - DELETE - clear queue (or delete item with specific mpd_id with url `/api/queue/{id}`)
 - `/api/play/tracks` - play list of tracks POSTed to this url
 - `/api/play/radios` - play list of radio stations POSTed to this url
+- `/api/jump/{track|radio|next|previous}` - jump to item in playlist
+    - POST `radio` or `track` instance to jump to the specific item.
+    - POST `previous` or `next` without body to jump to the next/previous item relative to current one
 - `/api/auth/login/` - login endpoint for token authentication
 
 ### Setup hardware interface

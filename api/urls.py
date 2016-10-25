@@ -15,6 +15,7 @@ api_urls = [
     url(r'^queue/(?P<position>\d+)/$', QueueView.as_view(), name='queue'),
     url(r'^queue/$', QueueView.as_view(), name='queue'),
     url(r'^play/(?P<content_type>tracks|radios)$', PlayView.as_view(), name='play'),
+    url(r'^jump/(?P<to>track|radio|next|previous)$', JumpView.as_view(), name='jump'),
     url(r'^', include(api_router.urls)),
 ]
 

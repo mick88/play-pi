@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.http.response import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
@@ -150,4 +151,64 @@ class PlayView(APIView):
         items = sorted(items, key=lambda item: ids.index(item.id))
         self.play(items)
         serializer = serializer_class(instance=items, many=True)
+        return Response(data=serializer.data)
+
+
+class JumpView(APIView):
+    """
+    POST to this endpoint to jump to an item in the queue
+    /api/jump/track - post Track instance to jump to the track
+    /api/jump/radio - post Radio station instance to jump to the radio
+    /api/jump/next - jump to the next item relative to current
+    /api/jump/previous - jump to previous item relative to current
+    """
+    http_method_names = 'post',
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def jump_to(self, item):
+        """
+        Jump to item in the queue
+        Args:
+            item: Track or Radio instance, or string "next" or "previous"
+        """
+        with mpd_client() as client:
+            if item in ('next', 'previous'):
+                method = getattr(client, item)
+                return method()
+            else:
+                return client.playid(item.mpd_id)
+
+    def post(self, request, to):
+        if to.startswith('track'):
+            model = Track
+            serializer_class = TrackSerializer
+        elif to.startswith('radio'):
+            model = RadioStation
+            serializer_class = RadioSerializer
+        else:
+            model = None
+            serializer_class = None
+
+        if model is None:
+            # Jumping to next/previous item
+            self.jump_to(to)
+            item = utils.get_currently_playing_track()
+        else:
+            serializer = serializer_class(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            pk = request.data['id']
+            item = get_object_or_404(model, pk=pk)
+            if not item.mpd_id:
+                raise Http404('{} not found in the queue'.format(item))
+            self.jump_to(item)
+
+        if item:
+            serializer = QueueItemSerializer(instance={
+                'mpd_id': item.mpd_id,
+                'track' if isinstance(item, Track) else 'radio_station': item,
+            })
+        else:
+            serializer = QueueItemSerializer(instance=None)
         return Response(data=serializer.data)

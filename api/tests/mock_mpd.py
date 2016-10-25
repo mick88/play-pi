@@ -35,6 +35,13 @@ class MockMpdClient(MPDClient):
             setter = self.create_setter(field_name)
             setattr(self, field_name, setter)
 
+    @staticmethod
+    def __new__(cls, *more):
+        # Reuse the same instance of the client. Delete instance to create a new one
+        if not hasattr(cls, 'instance') or cls.instance is None:
+            cls.instance = super(MockMpdClient, cls).__new__(cls, *more)
+        return cls.instance
+
     def setvol(self, volume):
         self.status_data['volume'] = volume
 
@@ -83,5 +90,25 @@ class MockMpdClient(MPDClient):
             if item['id'] == mpd_id:
                 self.PLAYLIST.remove(item)
 
-    def play(self):
+    def play(self, pos=0):
+        self.status_data['song'] = pos
+        self.status_data['songid'] = int(self.PLAYLIST[self.status_data['song']]['id'])
         self.pause(0)
+
+    def next(self):
+        self.status_data['song'] += 1
+        if self.status_data['song'] >= len(self.PLAYLIST):
+            self.status_data['song'] = 0
+        self.status_data['songid'] = int(self.PLAYLIST[self.status_data['song']]['id'])
+
+    def previous(self):
+        if self.status_data['song'] > 0:
+            self.status_data['song'] -= 1
+        self.status_data['songid'] = int(self.PLAYLIST[self.status_data['song']]['id'])
+
+    def playid(self, mpd_id):
+        for pos, item in enumerate(self.PLAYLIST):
+            if int(item['id']) == int(mpd_id):
+                self.status_data['song'] = pos
+                self.status_data['songid'] = mpd_id
+                break
