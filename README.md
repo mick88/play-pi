@@ -17,7 +17,7 @@ There are [futher instructions for setting up/testing mpc](http://www.gmpa.it/it
 `cd play-pi`
 * First, you'll need to update `pip`'s setuptools: `sudo pip install -U setuptools`
 * Next you'll need to use it to install the required python packages:
-`sudo pip install -r requirements.txt`
+`sudo pip install -r requirements.txt -c constraints.txt`
 * Create admin account with `./manage.py createsuperuser`
 * run `./manage.py setup` to setup access to your Google account
 To get your device ID, dial `*#*#8255#*#*` on your Android phone, or have a look on the App Store - there are many apps that will display it for you. iOS users can use their device's uuid prepended by `ios:`.
