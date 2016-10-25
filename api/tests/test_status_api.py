@@ -47,6 +47,26 @@ class TestStatusApi(APITestCase):
         data = response.data
         self.assertEqual(100, int(data['volume']))
 
+    def test_update_volume_increment(self):
+        MockMpdClient.status_data['volume'] = 50
+        data = {
+            'volume': '+5',
+        }
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(200, response.status_code)
+        data = response.data
+        self.assertEqual(55, int(data['volume']))
+
+    def test_update_volume_decrement(self):
+        MockMpdClient.status_data['volume'] = 50
+        data = {
+            'volume': '-5',
+        }
+        response = self.client.post(self.url, data=data)
+        self.assertEqual(200, response.status_code)
+        data = response.data
+        self.assertEqual(45, int(data['volume']))
+
 
     def test_update_repeat_true(self):
         data = {

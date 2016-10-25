@@ -88,6 +88,11 @@ class MpdStatusSerializer(serializers.Serializer):
     def create(self, validated_data):
         with mpd_client() as client:
             for key, value in validated_data.items():
+                if key == 'volume':
+                    # Handle volume increments, decrements if original value was prefixed with + or -
+                    if self.initial_data['volume'][0] in ('+', '-'):
+                        status = client.status()
+                        value += status['volume']
                 if value is not None:
                     if isinstance(value, bool):
                         # Cast boolean values to int since MPD doesnt understand booleans

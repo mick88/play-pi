@@ -39,6 +39,8 @@ class MpdStatusAPIView(APIView):
     """
     Provides low-level communication with MPD service.
     POST to this endpoint to update values with any non-null fields.
+    To increase/decrease volume relative to current value, prefix the volume value with + or -.
+    For example "volume": "+5"
     More information: https://pythonhosted.org/python-mpd2/topics/commands.html#MPDClient.status
     """
     permission_classes = ApiPermission,
