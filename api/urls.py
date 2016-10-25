@@ -11,11 +11,11 @@ api_router.register(r'albums', AlbumViewSet)
 api_router.register(r'playlists', PlaylistViewSet)
 
 api_urls = [
-    url(r'^status/$', MpdStatusViewSet.as_view(), name='mpd_status'),
-    url(r'^queue/(?P<position>\d+)/$', QueueView.as_view(), name='queue'),
-    url(r'^queue/$', QueueView.as_view(), name='queue'),
-    url(r'^play/(?P<content_type>tracks|radios)$', PlayView.as_view(), name='play'),
-    url(r'^jump/(?P<to>track|radio|next|previous)$', JumpView.as_view(), name='jump'),
+    url(r'^status/$', MpdStatusAPIView.as_view(), name='mpd_status'),
+    url(r'^queue/(?P<position>\d+)/$', QueueAPIView.as_view(), name='queue'),
+    url(r'^queue/$', QueueAPIView.as_view(), name='queue'),
+    url(r'^play/(?P<content_type>tracks|radios)$', PlayAPIView.as_view(), name='play'),
+    url(r'^jump/(?P<to>track|radio|next|previous)$', JumpAPIView.as_view(), name='jump'),
     url(r'^', include(api_router.urls)),
 ]
 

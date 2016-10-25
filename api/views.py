@@ -34,7 +34,7 @@ class AlbumViewSet(viewsets.ModelViewSet):
     serializer_class = AlbumSerializer
 
 
-class MpdStatusViewSet(APIView):
+class MpdStatusAPIView(APIView):
     """
     Provides low-level communication with MPD service.
     POST to this endpoint to update values with any non-null fields.
@@ -64,7 +64,7 @@ class MpdStatusViewSet(APIView):
             return Response(serializer.data)
 
 
-class QueueView(APIView):
+class QueueAPIView(APIView):
     """
     Endpoint for managing API queue.
     POSTing queue items to this url adds them to the queue.
@@ -114,7 +114,7 @@ class QueueView(APIView):
             return self.render_queue(client)
 
 
-class PlayView(APIView):
+class PlayAPIView(APIView):
     """
     POST to this endpoint to clear queue and start playing new items.
     /api/play/tracks - POST list of Tracks
@@ -154,7 +154,7 @@ class PlayView(APIView):
         return Response(data=serializer.data)
 
 
-class JumpView(APIView):
+class JumpAPIView(APIView):
     """
     POST to this endpoint to jump to an item in the queue
     /api/jump/track - post Track instance to jump to the track
