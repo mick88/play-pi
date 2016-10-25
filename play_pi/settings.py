@@ -124,6 +124,14 @@ INSTALLED_APPS = (
     'hardware',
 )
 
+try:
+    # Optional: Include django extensions if installed
+    # pip install django-extensions
+    import django_extensions
+    INSTALLED_APPS += 'django_extensions',
+except ImportError:
+    pass
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
