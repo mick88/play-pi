@@ -182,6 +182,11 @@ REST_FRAMEWORK = {
 MPD_ADDRESS = 'localhost'
 MPD_PORT = 6600
 
+# Defines whether login is required to view data
+LOGIN_REQUIRED = False
+# Defines whether login is required to control playback, queue etc
+PLAYBACK_CONTROL_LOGIN_REQUIRED = False
+
 
 def should_show_debug_toolbar(request):
     """

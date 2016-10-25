@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from validate import ValidateError
 
+from api.auth import ApiPermission
 from api.serializers import *
 from play_pi import utils
 from play_pi.utils import mpd_client
@@ -40,9 +41,7 @@ class MpdStatusAPIView(APIView):
     POST to this endpoint to update values with any non-null fields.
     More information: https://pythonhosted.org/python-mpd2/topics/commands.html#MPDClient.status
     """
-    permission_classes = [
-        IsAuthenticatedOrReadOnly,
-    ]
+    permission_classes = ApiPermission,
 
     def render_status_json_response(self, status):
         """
@@ -69,9 +68,7 @@ class QueueAPIView(APIView):
     Endpoint for managing API queue.
     POSTing queue items to this url adds them to the queue.
     """
-    permission_classes = [
-        IsAuthenticatedOrReadOnly,
-    ]
+    permission_classes = ApiPermission,
 
     def render_queue(self, client):
         playlist = client.playlistinfo()
@@ -122,9 +119,7 @@ class PlayAPIView(APIView):
     The current playlist will be cleared, populated with posted items, and played
     """
     http_method_names = 'post',
-    permission_classes = [
-        IsAuthenticated,
-    ]
+    permission_classes = ApiPermission,
 
     def play(self, items):
         with mpd_client() as client:
@@ -163,9 +158,7 @@ class JumpAPIView(APIView):
     /api/jump/previous - jump to previous item relative to current
     """
     http_method_names = 'post',
-    permission_classes = [
-        IsAuthenticated,
-    ]
+    permission_classes = ApiPermission,
 
     def jump_to(self, item):
         """
