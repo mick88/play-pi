@@ -93,7 +93,7 @@ class MpdStatusSerializer(serializers.Serializer):
                         # Handle volume increments, decrements if original value was prefixed with + or -
                         if self.initial_data['volume'][0] in ('+', '-'):
                             status = client.status()
-                            value += status['volume']
+                            value += int(status['volume'])
                     if isinstance(value, bool):
                         # Cast boolean values to int since MPD doesnt understand booleans
                         value = int(value)
