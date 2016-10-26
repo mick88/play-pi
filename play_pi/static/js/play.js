@@ -1,5 +1,7 @@
 $(document).ready(function () {
     var currentStatus = "";
+
+    // Search
     $('#search-box').keyup(function () {
         $('.thumbnail').each(function () {
             if ($(this).attr('name').toLowerCase().indexOf($('#search-box').val().toLowerCase()) == -1) {
@@ -10,9 +12,11 @@ $(document).ready(function () {
         });
     });
 
+    // Add spacing and colour to thumbnail labels
     $(".thumbnail h3").wrapInner("<span>");
     $(".thumbnail h3 br").before("<span class='spacer'>").after("<span class='spacer'>");
 
+    // Playback controls
     function ajax(toggle) {
         $.ajax("/ajax/" + toggle + "/", {type: "GET"}).always(function (response) {
             results = JSON.parse(response['responseText']);
@@ -121,6 +125,7 @@ $(document).ready(function () {
     fetchCurrentlyPlaying();
 });
 
+// Initialize volume slider
 $('#volume-slider').slider({
     formatter: function (value) {
         return 'Volume: ' + value;
@@ -132,6 +137,7 @@ $('#volume-slider').on('slideStop', function (event) {
     $.get('/ajax/volume/' + volume);
 });
 
+// Initialize "Now Playing" popup (mobile view)
 $(function () {
     $('[data-toggle="popover"]').popover()
 });
