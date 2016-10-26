@@ -174,6 +174,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'api.auth.SessionAuthenticationNoCsrf',
+    ),
     'PAGE_SIZE': 50,
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }

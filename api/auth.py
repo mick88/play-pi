@@ -1,4 +1,5 @@
 from django.conf import settings
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
@@ -18,3 +19,11 @@ class ApiPermission(BasePermission):
 
         # User is not authenticated, but login is not required
         return True
+
+
+class SessionAuthenticationNoCsrf(SessionAuthentication):
+    """
+    Session authentication without csrf
+    """
+    def enforce_csrf(self, request):
+        pass
