@@ -37,21 +37,26 @@ def mpd_play(tracks):
                 started = Track
 
 
+def mpd_client_enqueue(client, *tracks):
+    """ Append tracks to the queue without actually playing them """
+    site = Site.objects.get_current()
+    base_address = 'http://{}'.format(site.domain)
+    for track in tracks:
+        if isinstance(track, RadioStation):
+            url = track.url
+        else:
+            path = reverse('get_stream', args=[track.id, ])
+            url = base_address + path
+        track.mpd_id = client.addid(url)
+        if track.mpd_id is None:
+            raise ValueError('Could not add {} to queue'.format(track))
+        track.save()
+
+
 def mpd_enqueue(*tracks):
     """ Append tracks to the queue without actually playing them """
     with mpd_client() as client:
-        site = Site.objects.get_current()
-        base_address = 'http://{}'.format(site.domain)
-        for track in tracks:
-            if isinstance(track, RadioStation):
-                url = track.url
-            else:
-                path = reverse('get_stream', args=[track.id, ])
-                url = base_address + path
-            track.mpd_id = client.addid(url)
-            if track.mpd_id is None:
-                raise ValueError('Could not add {} to queue'.format(track))
-            track.save()
+        mpd_client_enqueue(client, *tracks)
 
 
 class mpd_client(object):

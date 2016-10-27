@@ -1,18 +1,16 @@
-import json
 import logging
 
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.http.response import Http404
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.shortcuts import get_object_or_404
 from django.views.generic import View
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from play_pi.models import *
-from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, get_currently_playing_track, mpd_client, mpd_enqueue
+from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, mpd_client, mpd_enqueue
 
 logger = logging.getLogger(__name__)
 
@@ -166,107 +164,6 @@ class StreamView(RedirectView):
 	def get_redirect_url(self, *args, **kwargs):
 		track = get_object_or_404(Track, id=kwargs['track_id'])
 		return get_gplay_url(track.stream_id)
-
-
-class ControlView(RedirectView):
-	url = reverse_lazy('home')
-
-	def control_stop(self, client):
-		try:
-			client.clear()
-		except:
-			pass
-		client.stop()
-
-	def control_random(self, client):
-		status = client.status()
-		client.random((-1 * int(status['random'])) + 1)
-
-	def control_repeat(self, client):
-		status = client.status()
-		client.repeat((-1 * int(status['repeat'])) + 1)
-		logger.debug(status)
-
-	def dispatch(self, request, *args, **kwargs):
-		action = kwargs['action']
-		control = getattr(self, 'control_{}'.format(action))
-		with mpd_client() as client:
-			control(client)
-		return super(ControlView, self).dispatch(request, *args, **kwargs)
-
-
-class AjaxView(View):
-	def ajax_random(self, client, *args, **kwargs):
-		status = client.status()
-		client.random((-1 * int(status['random'])) + 1)
-		return client.status()
-
-	def ajax_repeat(self, client, *args, **kwargs):
-		status = client.status()
-		client.repeat((-1 * int(status['repeat'])) + 1)
-		return client.status()
-
-	def ajax_stop(self, client, *args, **kwargs):
-		client.stop()
-		return client.status()
-
-	def ajax_pause(self, client, *args, **kwargs):
-		client.pause()
-		return client.status()
-
-	def ajax_play(self, client, *args, **kwargs):
-		client.play()
-		return client.status()
-
-	def ajax_next(self, client, *args, **kwargs):
-		client.next()
-		return client.status()
-
-	def ajax_previous(self, client, *args, **kwargs):
-		client.previous()
-		return client.status()
-
-	def ajax_volume(self, client, value, *args, **kwargs):
-		volume = int(value)
-		client.setvol(volume)
-		return client.status()
-
-	def ajax_volume_delta(self, client, value, *args, **kwargs):
-		status = client.status()
-		volume = int(status['volume']) + int(value)
-		client.setvol(volume)
-		return client.status()
-
-	def ajax_current_song(self, client, *args, **kwargs):
-		try:
-			track = get_currently_playing_track()
-			if isinstance(track, Track):
-				return {
-					'title': track.name,
-					'album': track.album.name,
-					'artist': track.artist.name,
-					'state': client.status()['state'],
-				}
-			elif isinstance(track, RadioStation):
-				return {
-					'title': track.name,
-					'album': '',
-					'artist': '',
-					'state': client.status()['state'],
-				}
-			else:
-				return {}
-		except Exception as e:
-			logger.error(e.message)
-			return {}
-
-	def dispatch(self, request, *args, **kwargs):
-		method = getattr(self, u'ajax_{method}'.format(**kwargs), None)
-		if method is None:
-			raise Http404(u'Method {method} does not exist'.format(**kwargs))
-		with mpd_client() as client:
-			data = method(client, *args, **kwargs)
-		return HttpResponse(json.dumps(data), 'application/javascript')
 
 
 class RadioStationListView(ListView):

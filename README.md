@@ -47,6 +47,28 @@ Follow steps listed in **Setup/Installation** first to install dependencies and 
 * If there are any errors you will find them in the apache error log: `/var/log/apache2/error.log`
 
 
+### API
+The project exposes REST API using Django Rest Framework. The API is located at `/api/`. 
+All endpoints are open for GET requests without authentication. To make POST and DELETE requests, you need to [authenticate](http://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/#authenticating-with-the-api). 
+Available Endpoints:
+- `/api/tracks/` - list of songs stored in Google Play Music 
+- `/api/albums/` - list of albums stored in Google Play Music 
+- `/api/playlists/` - list of playlists stored in Google Play Music 
+- `/api/radio_stations/` - list of radio stations
+- `/api/status/` - media player status. 
+    - POST to this url to control playback, volume etc
+- `/api/queue/` - playback queue, returns list of both tracks and radio stations in the queue. 
+Available methods
+    - POST - Add item to queue (insert at specific position with url `/api/queue/{id}`)
+    - DELETE - clear queue (or delete item with specific mpd_id with url `/api/queue/{id}`)
+- `/api/queue/current` - Currently played item in the queue 
+- `/api/play/tracks` - play list of tracks POSTed to this url
+- `/api/play/radios` - play list of radio stations POSTed to this url
+- `/api/jump/{track|radio|next|previous}` - jump to item in playlist
+    - POST `radio` or `track` instance to jump to the specific item.
+    - POST `previous` or `next` without body to jump to the next/previous item relative to current one
+- `/api/auth/login/` - login endpoint for token authentication
+
 ### Setup hardware interface
 The project is capable of taking input from buttons connected to GPIO pins. You can configure connected buttons and assign them to actions in the admin backend:
 

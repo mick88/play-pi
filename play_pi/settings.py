@@ -118,7 +118,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'bootstrap3',
     'debug_toolbar',
+    'rest_framework',
     'play_pi',
+    'api',
     'hardware',
 )
 
@@ -168,9 +170,26 @@ LOGGING = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'api.auth.SessionAuthenticationNoCsrf',
+    ),
+    'PAGE_SIZE': 50,
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
+
 # MPD deamon settings
 MPD_ADDRESS = 'localhost'
 MPD_PORT = 6600
+
+# Defines whether login is required to view data
+LOGIN_REQUIRED = False
+# Defines whether login is required to control playback, queue etc
+PLAYBACK_CONTROL_LOGIN_REQUIRED = False
 
 
 def should_show_debug_toolbar(request):
