@@ -73,6 +73,7 @@ $(document).ready(function () {
         updateUi(status);
         $.post(API_STATUS, status, function (data, status) {
             onStatusChange(data);
+            fetchCurrentlyPlaying();
         });
     }
 
