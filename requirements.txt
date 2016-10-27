@@ -18,7 +18,7 @@ rsa==3.1.4
 six==1.8.0
 validictory==1.0.0a2
 wsgiref==0.1.2
-django-debug-toolbar==1.4
+django-debug-toolbar==1.5
 django-bootstrap3==7.0.1
 RPi.GPIO==0.6.2
 djangorestframework==3.5.0

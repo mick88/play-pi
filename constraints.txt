@@ -1,4 +1,1 @@
 # https://pip.pypa.io/en/stable/user_guide/#constraints-files
-
-# http://stackoverflow.com/a/38479670
-sqlparse==0.1.19
