@@ -113,6 +113,29 @@ class QueueAPIView(APIView):
             return self.render_queue(client)
 
 
+class NowPlayingApiView(APIView):
+    permission_classes = ApiPermission,
+
+    def get(self, request):
+        with mpd_client() as client:
+            status = client.status()
+        mpd_id = status.get('songid', None)
+
+        data = dict(
+            mpd_id=mpd_id,
+            track=None,
+            radio_station=None,
+        )
+
+        if mpd_id:
+            data['track'] = Track.objects.filter(mpd_id=mpd_id).first()
+            if data['track'] is None:
+                # Only query for radio station if track was not found
+                data['radio_station'] = RadioStation.objects.filter(mpd_id=mpd_id).first()
+        serializer = QueueItemSerializer(instance=data)
+        return Response(serializer.data)
+
+
 class PlayAPIView(APIView):
     """
     POST to this endpoint to clear queue and start playing new items.

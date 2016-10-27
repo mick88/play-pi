@@ -14,6 +14,7 @@ api_urls = [
     url(r'^status/$', MpdStatusAPIView.as_view(), name='mpd_status'),
     url(r'^queue/(?P<position>\d+)/$', QueueAPIView.as_view(), name='queue'),
     url(r'^queue/$', QueueAPIView.as_view(), name='queue'),
+    url(r'^queue/current$', NowPlayingApiView.as_view(), name='now-playing'),
     url(r'^play/(?P<content_type>tracks|radios)$', PlayAPIView.as_view(), name='play'),
     url(r'^jump/(?P<to>track|radio|next|previous)$', JumpAPIView.as_view(), name='jump'),
     url(r'^', include(api_router.urls)),

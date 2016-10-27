@@ -61,6 +61,7 @@ Available Endpoints:
 Available methods
     - POST - Add item to queue (insert at specific position with url `/api/queue/{id}`)
     - DELETE - clear queue (or delete item with specific mpd_id with url `/api/queue/{id}`)
+- `/api/queue/current` - Currently played item in the queue 
 - `/api/play/tracks` - play list of tracks POSTed to this url
 - `/api/play/radios` - play list of radio stations POSTed to this url
 - `/api/jump/{track|radio|next|previous}` - jump to item in playlist
