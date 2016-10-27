@@ -1,11 +1,11 @@
 from __future__ import unicode_literals
 
+from django.core.exceptions import ValidationError
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from validate import ValidateError
 
 from api.auth import ApiPermission
 from api.serializers import *
@@ -152,7 +152,7 @@ class PlayAPIView(APIView):
 
     def post(self, request, content_type):
         if content_type not in ('tracks', 'radios'):
-            raise ValidateError('Content type {content_type} is not supported by this API.'.format(
+            raise ValidationError('Content type {content_type} is not supported by this API.'.format(
                 content_type=content_type,
             ))
         if content_type == 'tracks':
