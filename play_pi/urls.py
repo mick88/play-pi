@@ -1,6 +1,5 @@
 from django.conf.urls import include, url
 from django.contrib import admin
-from rest_framework import routers
 
 from api.views import *
 from play_pi.views import *
@@ -19,10 +18,7 @@ urlpatterns = [
 	url(r'^playlists/$', PlaylistListView.as_view(), name='playlists'),
 	url(r'^playlist/(?P<playlist_id>\d+)/$', PlaylistView.as_view(), name='playlist'),
 	url(r'^play/(?P<entity>\w+)/(?P<play_id>\d+)/$', PlayView.as_view(), name='play'),
-	url(r'^controls/(?P<action>random|repeat|stop)/$', ControlView.as_view(), name='control'),
 	url(r'^get_stream/(?P<track_id>\d+)/$', StreamView.as_view(), name='get_stream'),
-	url(r'^ajax/(?P<method>\w+)/?$', AjaxView.as_view(), name='ajax'),
-	url(r'^ajax/(?P<method>\w+)/(?P<value>[\-\d]+)/?$', AjaxView.as_view(), name='ajax'),
 	url(r'^admin/', include(admin.site.urls)),
 	url(r'^api/', include('api.urls')),
 ]
