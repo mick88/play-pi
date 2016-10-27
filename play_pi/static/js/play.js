@@ -3,9 +3,10 @@ const API_BASE = '/api/';
 const API_STATUS = API_BASE + 'status/';
 const API_JUMP = API_BASE + 'jump/';
 const API_QUEUE = API_BASE + 'queue/';
+const API_NOW_PLAYING = API_BASE + 'queue/current';
 
 var lastStatus = {};
-var queue = [];
+var nowPlaying = {}
 
 
 function onStatusChange(status) {
@@ -65,13 +66,6 @@ function fetchStatus() {
     });
 }
 
-function fetchQueue() {
-    $.get(API_QUEUE, function (data, status) {
-        queue = data;
-        fetchStatus();
-    });
-}
-
 /**
  * Jump to item in queue
  * @param to String: track|radio|next|previous
@@ -84,8 +78,6 @@ function jump(to, item) {
 }
 
 $(document).ready(function () {
-    var currentStatus = "";
-
     // Search
     $('#search-box').keyup(function () {
         $('.thumbnail').each(function () {
@@ -132,7 +124,6 @@ $(document).ready(function () {
         sendStatus({
             'state': 'play'
         });
-
     });
 
     $("#next-button").click(function (e) {
@@ -160,38 +151,37 @@ $(document).ready(function () {
         clearTimeout(currentTimeout);
         fetchStatus();
 
-        $.ajax("/ajax/current_song", {type: "GET"}).always(function (data) {
+        $.get(API_NOW_PLAYING, function (data, status) {
             currentTimeout = setTimeout(fetchCurrentlyPlaying, 5000);
+            nowPlaying = data;
 
-            if (data == '{}') {
-                $("#current-song").hide();
-                $('#now-playing-popover').hide();
-                return;
+            var show = lastStatus.state != 'stop';
+
+            if (data.track) {
+                var track = data.track;
+                $("#current-song-title").text(track.name);
+                $("#current-song-artist").text(track.artist.name);
+                $('#now-playing-popover').attr('data-content', track.artist.name + " - " + track.name);
+            } else if (data.radio_station) {
+                var radio = data.radio_station;
+                $("#current-song-title").text(radio.name);
+                $("#current-song-artist").text('Radio');
+                $('#now-playing-popover').attr('data-content', radio.name);
+            } else {
+                show = false;
             }
 
-            var data = JSON.parse(data['responseText']);
-            $("#current-song-album").text(data.album);
-            $("#current-song-title").text(data.title);
-            $("#current-song-artist").text(data.artist);
-            if (data.artist) {
-                var title = data.artist + " - " + data.title;
-            } else {
-                var title = data.title;
-            }
-            $('#now-playing-popover').attr('data-content', title);
-            currentStatus = data.state;
-            if ((!data.album && !data.title && !data.artist) || currentStatus === "stop") {
-                $("#current-song").hide();
-                $('#now-playing-popover').hide();
-            } else {
+            if (show) {
                 $("#current-song").show();
                 $('#now-playing-popover').show();
+            } else {
+                $("#current-song").hide();
+                $('#now-playing-popover').hide();
             }
-
         });
+
     }
 
-    $("#current-song").hide();
     fetchCurrentlyPlaying();
 });
 
