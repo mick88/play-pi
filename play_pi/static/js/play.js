@@ -5,78 +5,6 @@ const API_JUMP = API_BASE + 'jump/';
 const API_QUEUE = API_BASE + 'queue/';
 const API_NOW_PLAYING = API_BASE + 'queue/current';
 
-var lastStatus = {};
-var nowPlaying = {}
-
-
-function onStatusChange(status) {
-    lastStatus = status;
-    updateUi(status);
-}
-
-function updateUi(status) {
-    // using switch because we're only interested in true/false state.
-    // random/repeat etc could also be undefined
-    switch (status.random) {
-        case true:
-            $("#random-button").parent().addClass('active');
-            break;
-        case false:
-            $("#random-button").parent().removeClass('active');
-            break;
-    }
-
-    switch (status.repeat) {
-        case true:
-            $("#repeat-button").parent().addClass('active');
-            break;
-        case false:
-            $("#repeat-button").parent().removeClass('active');
-            break;
-    }
-
-    switch (status.state) {
-        case 'play':
-            $("#play-button").hide();
-            $("#pause-button").show();
-            break;
-        case 'pause':
-        case 'stop':
-            $("#play-button").show();
-            $("#pause-button").hide();
-            break;
-    }
-
-}
-
-/**
- * Sends status update to the API
- * @param status - the status dict
- */
-function sendStatus(status) {
-    updateUi(status);
-    $.post(API_STATUS, status, function (data, status) {
-        onStatusChange(data);
-    });
-}
-
-function fetchStatus() {
-    $.get(API_STATUS, function (data, status) {
-        onStatusChange(data);
-    });
-}
-
-/**
- * Jump to item in queue
- * @param to String: track|radio|next|previous
- * @param item track or radio object. Not required for next/previous
- */
-function jump(to, item) {
-    $.post(API_JUMP + to, status, function (item, status) {
-        // TODO: Refresh current song
-    });
-}
-
 $(document).ready(function () {
     // Search
     $('#search-box').keyup(function () {
@@ -92,6 +20,78 @@ $(document).ready(function () {
     // Add spacing and colour to thumbnail labels
     $(".thumbnail h3").wrapInner("<span>");
     $(".thumbnail h3 br").before("<span class='spacer'>").after("<span class='spacer'>");
+
+    var lastStatus = {};
+    var nowPlaying = {};
+
+
+    function onStatusChange(status) {
+        lastStatus = status;
+        updateUi(status);
+    }
+
+    function updateUi(status) {
+        // using switch because we're only interested in true/false state.
+        // random/repeat etc could also be undefined
+        switch (status.random) {
+            case true:
+                $("#random-button").parent().addClass('active');
+                break;
+            case false:
+                $("#random-button").parent().removeClass('active');
+                break;
+        }
+
+        switch (status.repeat) {
+            case true:
+                $("#repeat-button").parent().addClass('active');
+                break;
+            case false:
+                $("#repeat-button").parent().removeClass('active');
+                break;
+        }
+
+        switch (status.state) {
+            case 'play':
+                $("#play-button").hide();
+                $("#pause-button").show();
+                break;
+            case 'pause':
+            case 'stop':
+                $("#play-button").show();
+                $("#pause-button").hide();
+                break;
+        }
+
+    }
+
+    /**
+     * Sends status update to the API
+     * @param status - the status dict
+     */
+    function sendStatus(status) {
+        updateUi(status);
+        $.post(API_STATUS, status, function (data, status) {
+            onStatusChange(data);
+        });
+    }
+
+    function fetchStatus() {
+        $.get(API_STATUS, function (data, status) {
+            onStatusChange(data);
+        });
+    }
+
+    /**
+     * Jump to item in queue
+     * @param to String: track|radio|next|previous
+     * @param item track or radio object. Not required for next/previous
+     */
+    function jump(to, item) {
+        $.post(API_JUMP + to, status, function (item, status) {
+            fetchCurrentlyPlaying();
+        });
+    }
 
     $('#random-button').click(function (e) {
         var random = lastStatus == null ? false : lastStatus['random'];
@@ -182,24 +182,25 @@ $(document).ready(function () {
 
     }
 
+    // Initialize volume slider
+    $('#volume-slider').slider({
+        formatter: function (value) {
+            return 'Volume: ' + value;
+        }
+    });
+
+    $('#volume-slider').on('slideStop', function (event) {
+        var volume = event.value;
+        sendStatus({
+            'volume': volume
+        });
+    });
+
+    // Initialize "Now Playing" popup (mobile view)
+    $(function () {
+        $('[data-toggle="popover"]').popover()
+    });
+
     fetchCurrentlyPlaying();
 });
 
-// Initialize volume slider
-$('#volume-slider').slider({
-    formatter: function (value) {
-        return 'Volume: ' + value;
-    }
-});
-
-$('#volume-slider').on('slideStop', function (event) {
-    var volume = event.value;
-    sendStatus({
-        'volume': volume
-    });
-});
-
-// Initialize "Now Playing" popup (mobile view)
-$(function () {
-    $('[data-toggle="popover"]').popover()
-});
