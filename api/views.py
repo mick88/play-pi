@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
-from rest_framework.decorators import detail_route, list_route
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from validate import ValidateError
