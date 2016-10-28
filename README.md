@@ -2,7 +2,7 @@
 
 A frontend for a [Google Play Music](http://play.google.com/music/) Pi Jukebox. Play-pi will provide a web-frontend that can be used to browse and play your Google Music library.
 
-![Screenshot: Now Playing](http://i.imgur.com/XbGadJU.png)
+![Screenshot: Now Playing](http://i.imgur.com/kHASX1C.png)
 
 ###Setup/Installation:
 
