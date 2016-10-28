@@ -50,7 +50,7 @@ This is the easiest method, the website is served by Django's `runserver` comman
 ```bash
 sudo su
 source bin/activate
-sudo ./manage.py runserver 0.0.0.0:80 --settings=play_pi.prod
+sudo ./manage.py runserver 0.0.0.0:80 --settings=play_pi.production
 ```
 ##### Install as apache site
 This is the preferred method if you want to use this project as a permanent installation as it will start automatically as soon as your Pi is powered up, and does not require user session to run.
