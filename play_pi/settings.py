@@ -87,6 +87,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
                 'play_pi.context_processors.mpd_status',
+                'dealer.contrib.django.context_processor',
             ],
             'debug': True,
         },
@@ -204,6 +205,9 @@ def should_show_debug_toolbar(request):
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': should_show_debug_toolbar,
 }
+
+DEALER_TYPE = 'git'
+DEALER_PATH = PROJECT_PATH
 
 try:
     from local_settings import *
