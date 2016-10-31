@@ -28,7 +28,7 @@ class GoogleCredentials(models.Model):
 
 class Artist(models.Model):
 	name = models.CharField(max_length=200, unique=True)
-	art_url = models.CharField(max_length=200)
+	art_url = models.CharField(max_length=200, null=True, blank=True)
 
 	def get_absolute_url(self):
 		return reverse('artist', args=[self.id])
@@ -41,7 +41,7 @@ class Album(models.Model):
 	name = models.CharField(max_length=200)
 	artist = models.ForeignKey(Artist, null=True, blank=True)
 	year = models.IntegerField(default=0)
-	art_url = models.CharField(max_length=200)
+	art_url = models.CharField(max_length=200, null=True, blank=True)
 
 	def get_absolute_url(self):
 		return reverse('album', args=[self.id])
