@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from api.auth import ApiPermission
 from api.serializers import *
 from play_pi import utils
-from play_pi.utils import mpd_client
+from play_pi.utils import mpd_client, invalidates_cache
 
 
 class TrackViewSet(viewsets.ModelViewSet):
@@ -54,6 +54,7 @@ class MpdStatusAPIView(APIView):
         with mpd_client() as client:
             return self.render_status_json_response(client.status())
 
+    @invalidates_cache()
     def post(self, request):
         serializer = MpdStatusSerializer(data=request.data)
         if serializer.is_valid():
@@ -87,6 +88,7 @@ class QueueAPIView(APIView):
         with mpd_client() as client:
             return self.render_queue(client)
 
+    @invalidates_cache()
     def post(self, request, position=None):
         serializer = QueueItemSerializer(data=request.data, partial=True)
         if serializer.is_valid():
@@ -150,6 +152,7 @@ class PlayAPIView(APIView):
             utils.mpd_client_enqueue(client, *items)
             client.play()
 
+    @invalidates_cache()
     def post(self, request, content_type):
         if content_type not in ('tracks', 'radios'):
             raise ValidationError('Content type {content_type} is not supported by this API.'.format(
@@ -196,6 +199,7 @@ class JumpAPIView(APIView):
             else:
                 return client.playid(item.mpd_id)
 
+    @invalidates_cache()
     def post(self, request, to):
         if to.startswith('track'):
             model = Track
