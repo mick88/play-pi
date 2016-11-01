@@ -73,7 +73,7 @@ class QueueAPIView(APIView):
     def render_queue(self, client):
         playlist = client.playlistinfo()
         ids = tuple(int(song['id']) for song in playlist)
-        tracks = list(Track.objects.filter(mpd_id__in=ids).select_related('artist'))
+        tracks = list(Track.objects.filter(mpd_id__in=ids).select_related('artist', 'album__artist'))
         radios = list(RadioStation.objects.filter(mpd_id__in=ids))
         items = sorted(tracks + radios, key=lambda track: ids.index(track.mpd_id))
         items = [{
