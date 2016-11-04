@@ -2,8 +2,6 @@ from __future__ import unicode_literals
 
 from django.apps.config import AppConfig
 from django.db.models import Q
-from django.db.utils import OperationalError
-
 
 
 class PlayPiApp(AppConfig):
@@ -23,8 +21,9 @@ class PlayPiApp(AppConfig):
             q = Q(mpd_id__gt=0) & ~Q(mpd_id__in=mpd_ids)
             Track.objects.filter(q).update(mpd_id=0)
             RadioStation.objects.filter(q).update(mpd_id=0)
-        except OperationalError:
+        except Exception:
             # Will happen if migrations have not ran yet
+            # Or mpd is not running
             pass
 
     def get_credentials(self):
