@@ -11,6 +11,7 @@ from django.views.generic.list import ListView
 
 from play_pi.models import *
 from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, mpd_client, mpd_enqueue, invalidates_cache
+from play_pi.view_mixins import CacheMixin
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,7 @@ class BaseGridView(ListView):
 	template_name = 'grid.html'
 
 
-class TrackListView(ListView):
+class TrackListView(CacheMixin, ListView):
 	queryset = Track.objects.all().select_related('artist')
 	template_name = 'track_list.html'
 	paginate_by = 50
@@ -52,17 +53,17 @@ class QueueView(TemplateView):
 		return data
 
 
-class ArtistListView(BaseGridView):
+class ArtistListView(CacheMixin, BaseGridView):
 	model = Artist
 	tab = 'artists'
 
 
-class AlbumListView(BaseGridView):
+class AlbumListView(CacheMixin, BaseGridView):
 	model = Album
 	tab = 'albums'
 
 
-class ArtistView(DetailView):
+class ArtistView(CacheMixin, DetailView):
 	pk_url_kwarg = 'artist_id'
 	model = Artist
 	template_name = 'grid.html'
@@ -74,12 +75,12 @@ class ArtistView(DetailView):
 		return data
 
 
-class PlaylistListView(BaseGridView):
+class PlaylistListView(CacheMixin, BaseGridView):
 	model = Playlist
 	tab = 'playlists'
 
 
-class PlaylistView(DetailView):
+class PlaylistView(CacheMixin, DetailView):
 	model = Playlist
 	pk_url_kwarg = 'playlist_id'
 	template_name = 'playlist.html'
@@ -92,7 +93,7 @@ class PlaylistView(DetailView):
 		return data
 
 
-class AlbumView(DetailView):
+class AlbumView(CacheMixin, DetailView):
 	model = Album
 	pk_url_kwarg = 'album_id'
 	template_name = 'album.html'
@@ -168,7 +169,7 @@ class StreamView(RedirectView):
 		return get_gplay_url(track.stream_id)
 
 
-class RadioStationListView(ListView):
+class RadioStationListView(CacheMixin, ListView):
 	model = RadioStation
 	template_name = 'radio_list.html'
 	tab = 'radios'

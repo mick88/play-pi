@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
 
-from django.contrib.auth.decorators import login_required
 from django.utils.cache import patch_response_headers
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page, never_cache
@@ -21,7 +20,7 @@ class CSRFExemptMixin(object):
 
 
 class CacheMixin(object):
-    cache_timeout = 60
+    cache_timeout = 500
 
     def get_cache_timeout(self):
         return self.cache_timeout
