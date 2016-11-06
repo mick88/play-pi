@@ -61,6 +61,8 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+DEFAULT_CACHE_TIME = 300
+
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
@@ -185,7 +187,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'radio-pi',
-        'TIMEOUT': 60,
+        'TIMEOUT': DEFAULT_CACHE_TIME,
         'OPTIONS': {
             'MAX_ENTRIES': 1000,
         }
