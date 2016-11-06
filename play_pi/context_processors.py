@@ -15,7 +15,7 @@ def mpd_status(request):
                 'mpd_status': client.status(),
             }
     except Exception as e:
-        error_message = u'Error occured while getting MPD status: {}'.format(e)
+        error_message = u'Error occurred while getting MPD status: {}'.format(e)
         logger.error(error_message)
         messages.error(request, error_message)
         return {}
