@@ -12,6 +12,10 @@ from play_pi.models import *
 class Command(BaseCommand):
     help = 'Initializes the database with your Google Music library'
 
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--create-thumbsup', action='store_true', dest='create_thumbsup', default=False, help='Create playlist with thumbs-up songs')
+
     def delete_entries(self):
         self.stdout.write('Clearing DB... ', ending='')
         cursor = connection.cursor()
@@ -157,7 +161,8 @@ class Command(BaseCommand):
         self.delete_entries()
         self.import_tracks(songs)
         self.import_playlists(playlists)
-        self.create_thumbs_up_playlist()
+        if options['create_thumbsup']:
+            self.create_thumbs_up_playlist()
 
 
 
