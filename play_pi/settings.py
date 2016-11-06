@@ -61,6 +61,8 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+DEFAULT_CACHE_TIME = 300
+
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
@@ -101,8 +103,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'play_pi.urls'
@@ -182,6 +182,17 @@ REST_FRAMEWORK = {
     ),
     'PAGE_SIZE': 50,
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'radio-pi',
+        'TIMEOUT': DEFAULT_CACHE_TIME,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+        }
+    }
 }
 
 # MPD deamon settings

@@ -2,6 +2,7 @@ import logging
 
 import mpd
 from django.apps import apps
+from django.utils import cache
 from django.contrib.sites.models import Site
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.urlresolvers import reverse
@@ -11,6 +12,28 @@ from play_pi.models import Track, RadioStation
 from play_pi.settings import MPD_PORT
 
 logger = logging.getLogger(__name__)
+
+
+def invalidate_cache(keys=None):
+    """
+    Clears cache
+    Args:
+        keys: keys to be cleared or None to clear everything
+    """
+    if keys is None:
+        cache.caches['default'].clear()
+    else:
+        cache.caches['default'].delete_many(keys)
+
+
+def invalidates_cache(keys=None):
+    """ Invalidates cache each time before function is called """
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            invalidate_cache(keys)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
 
 def get_gplay_url(stream_id):
     app = apps.get_app_config('play_pi')
