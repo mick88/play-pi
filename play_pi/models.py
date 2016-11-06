@@ -67,6 +67,11 @@ class BaseMpdTrack(models.Model):
     class Meta:
         abstract = True
 
+    @classmethod
+    def type_name(cls):
+        """ Should return either "track" or "radio" string """
+        raise NotImplementedError
+
 
 class Track(BaseMpdTrack):
     RATING_NONE = 0
@@ -84,6 +89,10 @@ class Track(BaseMpdTrack):
     stream_id = models.CharField(max_length=100)
     track_no = models.IntegerField(default=0)
     rating = models.SmallIntegerField(default=0, choices=RATING_CHOICES)
+
+    @classmethod
+    def type_name(cls):
+        return 'track'
 
     @property
     def art_url(self):
@@ -129,6 +138,10 @@ class RadioStation(BaseMpdTrack):
     name = models.CharField(max_length=70)
     url = models.URLField()
     order = models.IntegerField(default=0)
+
+    @classmethod
+    def type_name(cls):
+        return 'radio'
 
     def __unicode__(self):
         return self.name

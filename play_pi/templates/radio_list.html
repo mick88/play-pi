@@ -23,7 +23,7 @@
                     <th class="play-col"></th>
                 </tr>
                 {% for station in radiostation_list %}
-                    <tr>
+                    <tr id="radio-{{ station.id }}">
                         <td class='play-col'><a href='{% url "play" 'radio' station.id %}'>▶</a></td>
                         <td>{{ station.name }}</td>
                         <td><a href="{% url 'play' 'radio_enqueue' station.id %}" title="Add radio to queue">+</a></td>

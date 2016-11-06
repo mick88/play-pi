@@ -24,7 +24,7 @@
                     <th class="rating-col"></th>
                 </tr>
                 {% for track in tracks %}
-                    <tr>
+                    <tr id="{{ track.type_name }}-{{ track.id }}">
                         <td class='play-col'>
                             {% if track == current_track %}
                                 ▶
