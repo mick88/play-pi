@@ -10,7 +10,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from play_pi.models import *
-from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, mpd_client, mpd_enqueue, invalidates_cache
+from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, mpd_client, mpd_enqueue
 from play_pi.view_mixins import CacheMixin
 
 logger = logging.getLogger(__name__)
@@ -131,7 +131,6 @@ class PlayView(View):
 		return HttpResponseRedirect(url)
 
 
-	@invalidates_cache()
 	def play_jump(self, mpd_id):
 		with mpd_client() as client:
 			client.playid(mpd_id)

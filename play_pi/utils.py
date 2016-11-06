@@ -41,7 +41,6 @@ def get_gplay_url(stream_id):
     return api.get_stream_url(stream_id, app.get_credentials().device_id)
 
 
-@invalidates_cache()
 def mpd_play(tracks):
     with mpd_client() as client:
         site = Site.objects.get_current()
@@ -61,7 +60,6 @@ def mpd_play(tracks):
                 started = Track
 
 
-@invalidates_cache()
 def mpd_client_enqueue(client, *tracks):
     """ Append tracks to the queue without actually playing them """
     site = Site.objects.get_current()
@@ -97,7 +95,6 @@ class mpd_client(object):
         self.client.disconnect()
 
 
-@invalidates_cache()
 def mpd_play_radio(station):
     with mpd_client() as client:
         client.clear()
