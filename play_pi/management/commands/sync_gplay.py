@@ -10,7 +10,7 @@ from play_pi.models import *
 
 
 class Command(BaseCommand):
-    help = 'Initializes the database with your Google Music library'
+    help = 'Synchronizes local database with Google Play Music'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)
