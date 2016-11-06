@@ -3,6 +3,9 @@
 {% load tracks %}
 
 {% block content %}
+    <form method="get" class="form form-inline">
+        {% bootstrap_form view.search_form layout='inline' %}
+    </form>
     <div class="row">
         <div class="col-md-12">
             <h1>All tracks</h1>
@@ -34,7 +37,7 @@
     </div>
     <div class="row">
         <div class="col-md-offset-3">
-            {% bootstrap_pagination page_obj %}
+            {% bootstrap_pagination page_obj extra=view.pagination_extras %}
         </div>
     </div>
 {% endblock %}
