@@ -135,11 +135,13 @@ class Command(BaseCommand):
         app = apps.get_app_config('play_pi')
         api = app.get_api()
 
+        # Fetching data from Play Music
         self.stdout.write('Connected to Google Music, downloading data...', ending='')
         songs = api.get_all_songs()
         playlists = api.get_all_user_playlist_contents()
         self.stdout.write('done')
 
+        # Writing data to database
         self.delete_entries()
         self.import_tracks(songs)
         self.import_playlists(playlists)
