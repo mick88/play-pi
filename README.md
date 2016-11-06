@@ -39,7 +39,7 @@ pip install -r requirements.txt -c constraints.txt
 ```bash
 # Link your google account
 ./manage.py setup
-./manage.py init_gplay --create-thumbsup
+./manage.py sync_gplay --create-thumbsup
 ```
 To get your device ID, dial `*#*#8255#*#*` on your Android phone, or have a look on the App Store - there are many apps that will display it for you. iOS users can use their device's uuid prepended by `ios:`.
 It's highly recommended you use an [application specific password](https://support.google.com/accounts/answer/185833?hl=en) for this.
