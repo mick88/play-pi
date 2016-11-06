@@ -62,7 +62,7 @@ class BaseMpdTrack(models.Model):
     Base class for items playable with MPD
     contains essentials such as mpd id
     """
-    mpd_id = models.IntegerField(default=0)
+    mpd_id = models.IntegerField(default=0, db_index=True)
 
     class Meta:
         abstract = True
