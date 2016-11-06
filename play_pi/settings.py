@@ -186,12 +186,7 @@ REST_FRAMEWORK = {
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'radio-pi',
-        'TIMEOUT': DEFAULT_CACHE_TIME,
-        'OPTIONS': {
-            'MAX_ENTRIES': 1000,
-        }
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 

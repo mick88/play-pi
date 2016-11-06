@@ -1,15 +1,17 @@
 import logging
 
+from django.contrib import messages
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-from django.contrib import messages
+from django.utils.functional import cached_property
 from django.views.generic import View
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
+from play_pi.forms import SearchForm
 from play_pi.models import *
 from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, mpd_client, mpd_enqueue
 from play_pi.view_mixins import CacheMixin
@@ -32,6 +34,25 @@ class TrackListView(CacheMixin, ListView):
         'name',
     )
     tab = 'tracks'
+
+    @property
+    def pagination_extras(self):
+        extra = u''
+        if self.search_form.is_valid():
+            for field, value in self.search_form.cleaned_data.items():
+                extra += u'{field}={value}&'.format(field=field, value=value)
+        return extra
+
+    @cached_property
+    def search_form(self):
+        data = self.request.GET if 'q' in self.request.GET else None
+        return SearchForm(data=data)
+
+    def get_queryset(self):
+        qs = super(TrackListView, self).get_queryset()
+        if self.search_form.is_valid():
+            qs = self.search_form.filter(qs)
+        return qs
 
 
 class QueueView(TemplateView):
