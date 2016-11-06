@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 from django.views.generic import View
 from django.views.generic.base import RedirectView, TemplateView
 from django.views.generic.detail import DetailView
@@ -38,17 +39,22 @@ class QueueView(TemplateView):
 
 	def get_context_data(self, **kwargs):
 		data = super(QueueView, self).get_context_data(**kwargs)
-		with mpd_client() as client:
-			playlist = client.playlistinfo()
-			status = client.status()
+		try:
+			with mpd_client() as client:
+				playlist = client.playlistinfo()
+				status = client.status()
 
-		current_id = int(status.get('songid', 0)) or None
-		ids = [int(song['id']) for song in playlist]
-		tracks = list(Track.objects.filter(mpd_id__in=ids).select_related('artist'))
-		radios = list(RadioStation.objects.filter(mpd_id__in=ids))
-		tracks = sorted(tracks + radios, key=lambda track: ids.index(track.mpd_id))
-		data['tracks'] = tracks
-		data['current_track'] = next((track for track in tracks if track.mpd_id == current_id), None)
+			current_id = int(status.get('songid', 0)) or None
+			ids = [int(song['id']) for song in playlist]
+			tracks = list(Track.objects.filter(mpd_id__in=ids).select_related('artist'))
+			radios = list(RadioStation.objects.filter(mpd_id__in=ids))
+			tracks = sorted(tracks + radios, key=lambda track: ids.index(track.mpd_id))
+			data['tracks'] = tracks
+			data['current_track'] = next((track for track in tracks if track.mpd_id == current_id), None)
+		except Exception as e:
+			error_message = u'Could not connect to MPD service: {}'.format(e)
+			logger.error(error_message)
+			messages.error(self.request, error_message)
 		return data
 
 
