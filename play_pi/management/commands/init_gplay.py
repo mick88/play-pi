@@ -1,6 +1,11 @@
+import datetime
+
+import pytz
+from django.apps import apps
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
-from django.apps import apps
+
 from play_pi.models import *
 
 
@@ -76,13 +81,20 @@ class Command(BaseCommand):
             else:
                 album = None
 
+            last_modified_timestamp = song.get('lastModifiedTimestamp', None)
+            if last_modified_timestamp:
+                unix_timestamp = float(last_modified_timestamp) / 1000000
+                last_modified = datetime.datetime.fromtimestamp(unix_timestamp, tz=pytz.timezone(settings.TIME_ZONE))
+            else:
+                last_modified = None
             track = Track(
                 artist=artist,
                 album=album,
                 name=song['title'],
                 rating=song.get('rating', Track.RATING_NONE),
                 stream_id=song['id'],
-                track_no=song.get('trackNumber', 0)
+                track_no=song.get('trackNumber', 0),
+                last_modified=last_modified,
             )
             created_tracks.append(track)
             self.stdout.write(u'{}/{} tracks saved'.format(i, count), ending='\r')
@@ -118,7 +130,7 @@ class Command(BaseCommand):
         if Playlist.objects.filter(name=thumbs_up_name).exists():
             self.stdout.write(u'Playlist {} already exists'.format(thumbs_up_name))
             return
-        tracks = Track.objects.filter(rating=Track.RATING_THUMBS_UP)
+        tracks = Track.objects.filter(rating=Track.RATING_THUMBS_UP).order_by('-last_modified')
         if tracks.exists():
             playlist = Playlist.objects.create(
                 name=thumbs_up_name,
