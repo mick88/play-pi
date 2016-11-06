@@ -1,4 +1,5 @@
 <p class="text-muted" style="margin-left: 4px">Version {{ TAG }}</p>
+{% if mpd_status %}
 <footer class="footer navbar-fixed-bottom navbar-inverse">
     <div class="container">
         <ul class="nav navbar-nav playback-buttons">
@@ -41,3 +42,4 @@
         </div>
     </div>
 </footer>
+{% endif %}
