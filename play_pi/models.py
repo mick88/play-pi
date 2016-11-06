@@ -89,6 +89,7 @@ class Track(BaseMpdTrack):
     stream_id = models.CharField(max_length=100)
     track_no = models.IntegerField(default=0)
     rating = models.SmallIntegerField(default=0, choices=RATING_CHOICES)
+    last_modified = models.DateTimeField(null=True, blank=True)
 
     @classmethod
     def type_name(cls):
