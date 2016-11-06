@@ -2,6 +2,8 @@ from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import QuerySet
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from sortedm2m.fields import SortedManyToManyField
 
 
@@ -131,3 +133,10 @@ class RadioStation(BaseMpdTrack):
 
 	class Meta:
 		ordering = 'order',
+
+
+@receiver(post_save, sender=RadioStation, dispatch_uid='on_model_update_invalidate_cache')
+@receiver(post_delete, sender=RadioStation, dispatch_uid='on_model_update_invalidate_cache')
+def on_model_update(sender, instance, **kwargs):
+    from play_pi.utils import invalidate_cache
+    invalidate_cache()
