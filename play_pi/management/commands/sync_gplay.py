@@ -5,6 +5,7 @@ from django.apps import apps
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db import connection, transaction
+from django.db.models.query_utils import Q
 
 from play_pi.models import *
 
@@ -146,6 +147,22 @@ class Command(BaseCommand):
         else:
             self.stdout.write(u'no liked songs found in the library.')
 
+    def backup_mpd_ids(self):
+        """
+        Backs-up mpd ids into a tuple values (mpd_id, stream_id)
+        """
+        return tuple(Track.objects.filter(~Q(mpd_id=0)).values_list('mpd_id', 'stream_id'))
+
+    def restore_mpd_ids(self, mpd_ids):
+        """
+        Restores mpd ids into Track objects.
+        Looks up Tracks by stream_id
+        """
+        for mpd_id, stream_id in mpd_ids:
+            Track.objects.filter(stream_id=stream_id).update(
+                mpd_id=mpd_id,
+            )
+
     @transaction.atomic()
     def handle(self, *args, **options):
         app = apps.get_app_config('play_pi')
@@ -157,9 +174,13 @@ class Command(BaseCommand):
         playlists = api.get_all_user_playlist_contents()
         self.stdout.write('done')
 
+        mpd_ids = self.backup_mpd_ids()
+
         # Writing data to database
         self.delete_entries()
         self.import_tracks(songs)
+        # Restore mpd ids so that playback queue is not reset by sync
+        self.restore_mpd_ids(mpd_ids)
         self.import_playlists(playlists)
         if options['create_thumbsup']:
             self.create_thumbs_up_playlist()
