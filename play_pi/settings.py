@@ -88,6 +88,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'play_pi.context_processors.mpd_status',
                 'dealer.contrib.django.context_processor',
+                'django.contrib.messages.context_processors.messages',
             ],
             'debug': True,
         },
