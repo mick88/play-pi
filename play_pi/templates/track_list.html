@@ -3,12 +3,14 @@
 {% load tracks %}
 
 {% block content %}
-    <form method="get" class="form form-inline">
-        {% bootstrap_form view.search_form layout='inline' %}
-    </form>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <h1>All tracks</h1>
+        </div>
+        <div class="col-md-4">
+            <form method="get" class="form form-inline pull-right" id="search-form">
+                {% bootstrap_form view.search_form layout='inline' %}
+            </form>
         </div>
     </div>
     <div class="row">
