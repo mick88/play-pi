@@ -47,6 +47,9 @@ class Album(models.Model):
     year = models.IntegerField(default=0)
     art_url = models.CharField(max_length=200, null=True, blank=True)
 
+    def type_name(self):
+        return 'album'
+
     def get_absolute_url(self):
         return reverse('album', args=[self.id])
 
@@ -66,6 +69,10 @@ class BaseMpdTrack(models.Model):
 
     class Meta:
         abstract = True
+
+    @property
+    def html_id(self):
+        return u'{}-{}'.format(self.type_name(), self.id)
 
     @classmethod
     def type_name(cls):

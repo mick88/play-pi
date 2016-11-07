@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load tracks %}
+{% load play %}
 
 {% block jquery %}
 
@@ -10,7 +11,8 @@
 
 <div class="row">
   <div class="col-md-12">
-    <h1>{{ album.name }} <small> {{ album.artist.name }}</small> <a class='btn btn-default' href='{% url "play" 'album' album.id %}'>▶ Play Album</a>
+    <h1>{{ album.name }} <small> {{ album.artist.name }}</small>
+        {% play_button album css_classes='btn btn-default' label='Play Album' %}
     </h1>
   </div>
 </div>
@@ -29,7 +31,9 @@
       </tr>
       {% for track in tracks %}
         <tr>
-        	<td class='play-col'><a href='{% url "play" 'track' track.id %}'>▶</a></td>
+        	<td class='play-col'>
+                {% play_button track %}
+            </td>
         	<td class='num-col'>{{ track.track_no }}</td>
         	<td>{{ track.name }}</td>
         	<td>{{ track|track_rating_thumb }}</td>
