@@ -4,6 +4,7 @@ const API_STATUS = API_BASE + 'status/';
 const API_JUMP = API_BASE + 'jump/';
 const API_QUEUE = API_BASE + 'queue/';
 const API_NOW_PLAYING = API_BASE + 'queue/current';
+const API_PLAY_TRACKS = API_BASE + 'play/tracks';
 
 $(document).ready(function () {
     // Search
@@ -205,4 +206,15 @@ $(document).ready(function () {
     fetchStatus();
     fetchCurrentlyPlaying();
 });
+
+function playTracks(trackIds) {
+    var tracks = [];
+    for (var i = 0; i < trackIds.length; i++) {
+        tracks.push({'id': trackIds[i]});
+    }
+    $.post(API_PLAY_TRACKS, tracks, function (data, status) {
+        onStatusChange(data);
+        fetchCurrentlyPlaying();
+    });
+}
 

@@ -18,9 +18,11 @@ def play_button(item, css_classes='', label=''):
     if label:
         label = ' ' + label
     return format_html(
-        "<a href='{url}{fragment}' class='{css_classes}'>▶{label}</a>",
+        "<a href='#' class='btn-play {css_classes}' onclick='{play_function_name}([{item_id}])'>▶{label}</a>",
         url=reverse('play', args=(item.type_name(), item.id)),
         fragment=fragment,
         css_classes=css_classes,
         label=label,
+        item_id=item.id,
+        play_function_name='playTracks' if item.type_name() == 'track' else 'playRadios',
     )
