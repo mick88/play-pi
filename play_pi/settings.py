@@ -191,8 +191,8 @@ CACHES = {
 }
 
 # MPD deamon settings
-MPD_ADDRESS = 'localhost'
-MPD_PORT = 6600
+MPD_ADDRESS = os.environ.get('MPD_ADDRESS', 'localhost')
+MPD_PORT = os.environ.get('MPD_PORT', '6600')
 
 # Defines whether login is required to view data
 LOGIN_REQUIRED = False
