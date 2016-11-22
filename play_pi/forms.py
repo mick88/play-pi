@@ -1,10 +1,8 @@
 from __future__ import unicode_literals
 
 from django import forms
-from django.db.models.query_utils import Q
 from django.forms.widgets import PasswordInput
-
-from play_pi.models import GoogleCredentials, Track
+from play_pi.models import GoogleCredentials
 
 
 class GoogleCredentialsForm(forms.ModelForm):
@@ -20,18 +18,9 @@ class GoogleCredentialsForm(forms.ModelForm):
 class SearchForm(forms.Form):
     q = forms.CharField(max_length=70, label='Search...')
 
-    def build_track_q(self):
-        """
-        Builds Q object for filtering tracks
-        """
-        query = self.cleaned_data['q']
-        q = Q()
-        q |= Q(name__icontains=query)
-        q |= Q(artist__name__icontains=query)
-        return q
-
     def filter(self, qs):
         """
         Filters queryset by filters specified in this form
         """
-        return qs.filter(self.build_track_q())
+        q = self.cleaned_data['q']
+        return qs.search(q)

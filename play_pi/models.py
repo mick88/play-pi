@@ -1,6 +1,7 @@
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models import Q
 from django.db.models import QuerySet
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
@@ -73,6 +74,12 @@ class BaseMpdTrack(models.Model):
         raise NotImplementedError
 
 
+class TrackQuerySet(QuerySet):
+    def search(self, query):
+        q = Q(name__icontains=query) | Q(artist__name__icontains=query)
+        return self.filter(q)
+
+
 class Track(BaseMpdTrack):
     RATING_NONE = 0
     RATING_THUMBS_DOWN = 1
@@ -90,6 +97,8 @@ class Track(BaseMpdTrack):
     track_no = models.IntegerField(default=0)
     rating = models.SmallIntegerField(default=0, choices=RATING_CHOICES)
     last_modified = models.DateTimeField(null=True, blank=True)
+
+    objects = TrackQuerySet.as_manager()
 
     @classmethod
     def type_name(cls):
