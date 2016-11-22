@@ -77,7 +77,7 @@ If there are any errors you will find them in the apache error log: `/var/log/ap
 The project exposes REST API using Django Rest Framework. The API is located at `/api/`. 
 All endpoints are open for GET requests without authentication. To make POST and DELETE requests, you need to [authenticate](http://www.django-rest-framework.org/tutorial/4-authentication-and-permissions/#authenticating-with-the-api). 
 Available Endpoints:
-- `/api/tracks/` - list of songs stored in Google Play Music 
+- `/api/tracks/` - list of songs stored in Google Play Music. To search, add `search` get parameter
 - `/api/albums/` - list of albums stored in Google Play Music 
 - `/api/playlists/` - list of playlists stored in Google Play Music 
 - `/api/radio_stations/` - list of radio stations

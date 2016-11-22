@@ -1,19 +1,34 @@
 from __future__ import unicode_literals
 
+from api.auth import ApiPermission
+from api.serializers import *
 from django.core.exceptions import ValidationError
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
+from play_pi import utils
+from play_pi.utils import mpd_client
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from api.auth import ApiPermission
-from api.serializers import *
-from play_pi import utils
-from play_pi.utils import mpd_client
+
+class SearchMixin(object):
+    def get_queryset(self):
+        qs = super(SearchMixin, self).get_queryset()
+        return self.apply_search(qs)
+
+    def apply_search(self, qs):
+        if 'search' in self.request.GET:
+            qs = qs.search(self.request.GET['search'])
+        return qs
 
 
-class TrackViewSet(viewsets.ModelViewSet):
+class TrackViewSet(SearchMixin, viewsets.ModelViewSet):
+    """
+    List of all tracks
+    To search:
+    ?search={term}
+    """
     queryset = Track.objects.select_related('artist', 'album__artist')
     serializer_class = TrackSerializer
 
