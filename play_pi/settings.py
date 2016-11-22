@@ -1,4 +1,5 @@
 import os
+
 from gmusicapi import Webclient
 
 # Django settings for play_pi project.
@@ -117,6 +118,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'flat_responsive',
     'django.contrib.admin',
     'bootstrap3',
     'debug_toolbar',
