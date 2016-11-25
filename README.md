@@ -83,11 +83,12 @@ Available Endpoints:
 - `/api/radio_stations/` - list of radio stations
 - `/api/status/` - media player status. 
     - POST to this url to control playback, volume etc
-- `/api/queue/` - playback queue, returns list of both tracks and radio stations in the queue. 
+- `/api/queue/` - playback queue, returns list of both tracks and radio stations in the queue and currently played item.
 Available methods
     - POST - Add item to queue (insert at specific position with url `/api/queue/{id}`)
     - DELETE - clear queue (or delete item with specific mpd_id with url `/api/queue/{id}`)
-- `/api/queue/current` - Currently played item in the queue 
+    - GET `/api/queue/items` - List of items in the queue
+    - GET `/api/queue/current` - Currently played item in the queue 
 - `/api/play/tracks` - play list of tracks POSTed to this url
 - `/api/play/radios` - play list of radio stations POSTed to this url
 - `/api/jump/{track|radio|next|previous}` - jump to item in playlist
