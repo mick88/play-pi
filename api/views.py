@@ -1,15 +1,16 @@
 from __future__ import unicode_literals
 
-from api.auth import ApiPermission
-from api.serializers import *
 from django.core.exceptions import ValidationError
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
-from play_pi import utils
-from play_pi.utils import mpd_client
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from api.auth import ApiPermission
+from api.serializers import *
+from play_pi import utils
+from play_pi.utils import mpd_client
 
 
 class SearchMixin(object):
@@ -33,7 +34,7 @@ class TrackViewSet(SearchMixin, viewsets.ModelViewSet):
     serializer_class = TrackSerializer
 
 
-class RadioViewSet(viewsets.ModelViewSet):
+class RadioViewSet(SearchMixin, viewsets.ModelViewSet):
     queryset = RadioStation.objects.all()
     serializer_class = RadioSerializer
 

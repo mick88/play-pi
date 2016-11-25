@@ -144,10 +144,17 @@ class PlaylistConnection(models.Model):
         )
 
 
+class RadioStationQuerySet(QuerySet):
+    def search(self, query):
+        q = Q(name__icontains=query) | Q(url__icontains=query)
+        return self.filter(q)
+
 class RadioStation(BaseMpdTrack):
     name = models.CharField(max_length=70)
     url = models.URLField()
     order = models.IntegerField(default=0)
+
+    objects = RadioStationQuerySet.as_manager()
 
     @classmethod
     def type_name(cls):
