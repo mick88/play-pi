@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
+
 from rest_framework import serializers
 
 from play_pi.models import *
-from play_pi.utils import mpd_client, mpd_play
+from play_pi.utils import mpd_client
 
 MPD_PAUSE = 'pause'
 MPD_STOP = 'stop'
@@ -135,3 +136,8 @@ class QueueItemSerializer(serializers.Serializer):
             raise ValueError('Could not add {} to queue'.format(item))
         item.save()
         return item
+
+
+class QueueSerializer(serializers.Serializer):
+    current = QueueItemSerializer(allow_null=True)
+    items = QueueItemSerializer(many=True)

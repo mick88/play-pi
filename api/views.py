@@ -128,6 +128,48 @@ class QueueAPIView(APIView):
             return self.render_queue(client)
 
 
+class QueueAPIViewCombined(QueueAPIView):
+    """
+    Endpoint for managing API queue.
+    Same as above, but returns both queue array and current item
+    POSTing queue items to this url adds them to the queue.
+    """
+
+    def render_queue(self, client):
+        playlist = client.playlistinfo()
+        status = client.status()
+
+        # Get playlist
+        ids = tuple(int(song['id']) for song in playlist)
+        tracks = list(Track.objects.filter(mpd_id__in=ids).select_related('artist', 'album__artist'))
+        radios = list(RadioStation.objects.filter(mpd_id__in=ids))
+        items = sorted(tracks + radios, key=lambda track: ids.index(track.mpd_id))
+        items = [{
+                     'mpd_id': item.mpd_id,
+                     'track' if isinstance(item, Track) else 'radio_station': item,
+                 } for item in items]
+
+        # Get current
+        mpd_id = status.get('songid', None)
+        current = dict(
+            mpd_id=mpd_id,
+            track=None,
+            radio_station=None,
+        )
+        if mpd_id:
+            current['track'] = Track.objects.filter(mpd_id=mpd_id).first()
+            if current['track'] is None:
+                # Only query for radio station if track was not found
+                current['radio_station'] = RadioStation.objects.filter(mpd_id=mpd_id).first()
+
+        instance = dict(
+            current=current,
+            items=items,
+        )
+        serializer = QueueSerializer(instance=instance)
+        return Response(serializer.data)
+
+
 class NowPlayingApiView(APIView):
     permission_classes = ApiPermission,
 
