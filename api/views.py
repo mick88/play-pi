@@ -11,6 +11,7 @@ from api.auth import ApiPermission
 from api.serializers import *
 from play_pi import utils
 from play_pi.utils import mpd_client
+from play_pi.view_mixins import CacheMixin
 
 
 class SearchMixin(object):
@@ -24,7 +25,7 @@ class SearchMixin(object):
         return qs
 
 
-class TrackViewSet(SearchMixin, viewsets.ModelViewSet):
+class TrackViewSet(SearchMixin, CacheMixin, viewsets.ModelViewSet):
     """
     List of all tracks
     To search:
@@ -34,17 +35,17 @@ class TrackViewSet(SearchMixin, viewsets.ModelViewSet):
     serializer_class = TrackSerializer
 
 
-class RadioViewSet(SearchMixin, viewsets.ModelViewSet):
+class RadioViewSet(SearchMixin, CacheMixin, viewsets.ModelViewSet):
     queryset = RadioStation.objects.all()
     serializer_class = RadioSerializer
 
 
-class PlaylistViewSet(viewsets.ModelViewSet):
+class PlaylistViewSet(CacheMixin, viewsets.ModelViewSet):
     queryset = Playlist.objects.prefetch_related('tracks__artist', 'tracks__album__artist')
     serializer_class = PlaylistSerializer
 
 
-class AlbumViewSet(viewsets.ModelViewSet):
+class AlbumViewSet(CacheMixin, viewsets.ModelViewSet):
     queryset = Album.objects.select_related('artist')
     serializer_class = AlbumSerializer
 
