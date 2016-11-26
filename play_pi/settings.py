@@ -1,5 +1,6 @@
 import os
 
+from django.urls import reverse_lazy
 from gmusicapi import Webclient
 
 # Django settings for play_pi project.
@@ -196,6 +197,7 @@ CACHES = {
 MPD_ADDRESS = os.environ.get('MPD_ADDRESS', 'localhost')
 MPD_PORT = os.environ.get('MPD_PORT', '6600')
 
+LOGIN_URL = reverse_lazy('admin:login')
 # Defines whether login is required to view data
 LOGIN_REQUIRED = False
 # Defines whether login is required to control playback, queue etc

@@ -14,18 +14,18 @@ from django.views.generic.list import ListView
 from play_pi.forms import SearchForm
 from play_pi.models import *
 from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, mpd_client, mpd_enqueue
-from play_pi.views.mixins import CacheMixin
+from play_pi.views.mixins import CacheMixin, CheckLoginMixin
 
 logger = logging.getLogger(__name__)
 
 
-class BaseGridView(ListView):
+class BaseGridView(CheckLoginMixin, ListView):
     ordering = 'name',
     context_object_name = 'list'
     template_name = 'grid.html'
 
 
-class TrackListView(CacheMixin, ListView):
+class TrackListView(CacheMixin, CheckLoginMixin, ListView):
     queryset = Track.objects.all().select_related('artist')
     template_name = 'track_list.html'
     paginate_by = 50
@@ -55,7 +55,7 @@ class TrackListView(CacheMixin, ListView):
         return qs
 
 
-class QueueView(TemplateView):
+class QueueView(CheckLoginMixin, TemplateView):
     template_name = 'queue.html'
     tab = 'queue'
 
@@ -90,7 +90,7 @@ class AlbumListView(CacheMixin, BaseGridView):
     tab = 'albums'
 
 
-class ArtistView(CacheMixin, DetailView):
+class ArtistView(CheckLoginMixin, CacheMixin, DetailView):
     pk_url_kwarg = 'artist_id'
     model = Artist
     template_name = 'grid.html'
@@ -107,7 +107,7 @@ class PlaylistListView(CacheMixin, BaseGridView):
     tab = 'playlists'
 
 
-class PlaylistView(CacheMixin, DetailView):
+class PlaylistView(CheckLoginMixin, CacheMixin, DetailView):
     model = Playlist
     pk_url_kwarg = 'playlist_id'
     template_name = 'playlist.html'
@@ -120,7 +120,7 @@ class PlaylistView(CacheMixin, DetailView):
         return data
 
 
-class AlbumView(CacheMixin, DetailView):
+class AlbumView(CheckLoginMixin, CacheMixin, DetailView):
     model = Album
     pk_url_kwarg = 'album_id'
     template_name = 'album.html'
@@ -132,7 +132,7 @@ class AlbumView(CacheMixin, DetailView):
         return data
 
 
-class PlayView(View):
+class PlayView(CheckLoginMixin, View):
     def play_album(self, album_id):
         album = Album.objects.get(id=album_id)
         tracks = Track.objects.filter(album=album).order_by('track_no')
@@ -194,7 +194,7 @@ class StreamView(RedirectView):
         return get_gplay_url(track.stream_id)
 
 
-class RadioStationListView(CacheMixin, ListView):
+class RadioStationListView(CheckLoginMixin, CacheMixin, ListView):
     model = RadioStation
     template_name = 'radio_list.html'
     tab = 'radios'
