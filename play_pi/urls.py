@@ -2,7 +2,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 from api.views import *
-from play_pi.views import *
+from play_pi.views.views import *
 
 admin.autodiscover()
 

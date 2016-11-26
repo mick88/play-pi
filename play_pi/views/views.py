@@ -14,7 +14,7 @@ from django.views.generic.list import ListView
 from play_pi.forms import SearchForm
 from play_pi.models import *
 from play_pi.utils import mpd_play, get_gplay_url, mpd_play_radio, mpd_client, mpd_enqueue
-from play_pi.view_mixins import CacheMixin
+from play_pi.views.mixins import CacheMixin
 
 logger = logging.getLogger(__name__)
 

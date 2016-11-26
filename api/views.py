@@ -11,7 +11,7 @@ from api.auth import ApiPermission
 from api.serializers import *
 from play_pi import utils
 from play_pi.utils import mpd_client
-from play_pi.view_mixins import CacheMixin
+from play_pi.views.mixins import CacheMixin
 
 
 class SearchMixin(object):
