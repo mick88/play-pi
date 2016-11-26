@@ -133,6 +133,8 @@ class AlbumView(CheckLoginMixin, CacheMixin, DetailView):
 
 
 class PlayView(CheckLoginMixin, View):
+    playback_control = True
+
     def play_album(self, album_id):
         album = Album.objects.get(id=album_id)
         tracks = Track.objects.filter(album=album).order_by('track_no')
@@ -179,7 +181,7 @@ class PlayView(CheckLoginMixin, View):
         mpd_play_radio(station)
         return HttpResponseRedirect(reverse('radios'))
 
-    def dispatch(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         entity = kwargs.get('entity')
         play_id = kwargs.get('play_id')
         play = getattr(self, 'play_{}'.format(entity))

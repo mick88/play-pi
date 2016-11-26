@@ -53,13 +53,22 @@ class JitterCacheMixin(CacheControlMixin):
         return random.randint(*self.get_cache_range())
 
 
-# noinspection PyUnresolvedReferences
 class CheckLoginMixin(AccessMixin):
     """
     Checks whether login is required and is so,
     redirects user to login if not authenticated.
     """
+    # Tells whether this view controls playback
+    playback_control = False
+
+    def is_playback_control(self, request):
+        """Tells whether this view controls playback"""
+        return self.playback_control
+
+    # noinspection PyUnresolvedReferences
     def dispatch(self, request, *args, **kwargs):
         if settings.LOGIN_REQUIRED and not request.user.is_authenticated:
+            return self.handle_no_permission()
+        elif settings.PLAYBACK_CONTROL_LOGIN_REQUIRED and self.is_playback_control(request) and not request.user.is_authenticated:
             return self.handle_no_permission()
         return super(CheckLoginMixin, self).dispatch(request, *args, **kwargs)
