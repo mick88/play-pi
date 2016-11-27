@@ -132,7 +132,10 @@ class QueueItemSerializer(serializers.Serializer):
         else:
             return None
 
-        item.mpd_id = client.addid(url, position)
+        if position is None:
+            item.mpd_id = client.addid(url)
+        else:
+            item.mpd_id = client.addid(url, position)
         if item.mpd_id is None:
             raise ValueError('Could not add {} to queue'.format(item))
         item.save()

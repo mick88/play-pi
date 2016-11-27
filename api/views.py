@@ -111,7 +111,7 @@ class QueueAPIView(APIView):
                 if position is not None:
                     position = int(position)
                 serializer.enqueue(client, position)
-            return self.render_queue(client)
+                return self.render_queue(client)
         else:
             return Response(serializer.errors, status=400)
 
