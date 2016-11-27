@@ -13,7 +13,7 @@ api_router.register(r'playlists', PlaylistViewSet)
 
 api_urls = [
     url(r'^status/$', MpdStatusAPIView.as_view(), name='mpd_status'),
-    url(r'^queue/(?P<position>\d+)/$', QueueAPIView.as_view(), name='queue'),
+    url(r'^queue/(?P<position>\d+)/$', QueueAPIViewCombined.as_view(), name='queue'),
     url(r'^queue/$', QueueAPIViewCombined.as_view(), name='queue'),
     url(r'^queue/items$', QueueAPIView.as_view(), name='queue-items'),
     url(r'^queue/current$', NowPlayingApiView.as_view(), name='now-playing'),
