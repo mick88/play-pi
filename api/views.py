@@ -113,7 +113,7 @@ class QueueAPIView(APIView):
                 serializer.enqueue(client, position)
             return self.render_queue(client)
         else:
-            return Response(serializer.errors, status=401)
+            return Response(serializer.errors, status=400)
 
     def delete(self, request, position=None):
         """
