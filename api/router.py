@@ -17,13 +17,13 @@ class APIRootView(views.APIView):
 
     def get(self, request, *args, **kwargs):
         # Return a plain {"name": "hyperlink"} response.
-        ret = OrderedDict()
+        viewsets = OrderedDict()
         namespace = request.resolver_match.namespace
         for key, url_name in self.api_root_dict.items():
             if namespace:
                 url_name = namespace + ':' + url_name
             try:
-                ret[key] = reverse(
+                viewsets[key] = reverse(
                     url_name,
                     args=args,
                     kwargs=kwargs,
@@ -33,9 +33,25 @@ class APIRootView(views.APIView):
             except NoReverseMatch:
                 # Don't bail out if eg. no list routes exist, only detail routes.
                 continue
+        views = OrderedDict()
         for item in self.additional_urls:
-            ret[item.name] = unicode(item._regex)
-        return Response(ret)
+            try:
+                url_name = item.name
+                if namespace:
+                    url_name = namespace + ':' + url_name
+                url = reverse(
+                    url_name,
+                    request=request,
+                    format=kwargs.get('format', None),
+                )
+                viewsets[item.name] = url
+            except NoReverseMatch:
+                url = unicode(item._regex)
+                views[item.name] = url
+        return Response({
+            'viewsets': viewsets,
+            'views': views,
+        })
 
 
 class ApiRouter(DefaultRouter):
