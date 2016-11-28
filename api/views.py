@@ -14,6 +14,17 @@ from play_pi.utils import mpd_client
 from play_pi.views.mixins import CacheMixin
 
 
+# noinspection PyUnresolvedReferences
+class OrderMixin(object):
+    def get_queryset(self):
+        qs = super(OrderMixin, self).get_queryset()
+        return self.apply_ordering(qs)
+
+    def apply_ordering(self, qs):
+        order_fields = self.request.GET.getlist('order')
+        return qs.order_by(*order_fields)
+
+
 class SearchMixin(object):
     def get_queryset(self):
         qs = super(SearchMixin, self).get_queryset()
@@ -25,7 +36,7 @@ class SearchMixin(object):
         return qs
 
 
-class TrackViewSet(SearchMixin, CacheMixin, viewsets.ModelViewSet):
+class TrackViewSet(SearchMixin, OrderMixin, CacheMixin, viewsets.ModelViewSet):
     """
     List of all tracks
     To search:
@@ -35,17 +46,17 @@ class TrackViewSet(SearchMixin, CacheMixin, viewsets.ModelViewSet):
     serializer_class = TrackSerializer
 
 
-class RadioViewSet(SearchMixin, CacheMixin, viewsets.ModelViewSet):
+class RadioViewSet(SearchMixin, OrderMixin, CacheMixin, viewsets.ModelViewSet):
     queryset = RadioStation.objects.all()
     serializer_class = RadioSerializer
 
 
-class PlaylistViewSet(CacheMixin, viewsets.ModelViewSet):
+class PlaylistViewSet(CacheMixin, OrderMixin, viewsets.ModelViewSet):
     queryset = Playlist.objects.prefetch_related('tracks__artist', 'tracks__album__artist')
     serializer_class = PlaylistSerializer
 
 
-class AlbumViewSet(CacheMixin, viewsets.ModelViewSet):
+class AlbumViewSet(CacheMixin, OrderMixin, viewsets.ModelViewSet):
     queryset = Album.objects.select_related('artist')
     serializer_class = AlbumSerializer
 
