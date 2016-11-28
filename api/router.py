@@ -47,6 +47,7 @@ class APIRootView(views.APIView):
                 viewsets[item.name] = url
             except NoReverseMatch:
                 url = unicode(item._regex)
+                url = request.build_absolute_uri() + url.strip('^$')
                 views[item.name] = url
         return Response({
             'viewsets': viewsets,
