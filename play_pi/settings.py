@@ -198,6 +198,7 @@ CACHES = {
 # MPD deamon settings
 MPD_ADDRESS = os.environ.get('MPD_ADDRESS', 'localhost')
 MPD_PORT = os.environ.get('MPD_PORT', '6600')
+MPD_TIMEOUT = 15
 
 LOGIN_URL = reverse_lazy('admin:login')
 # Defines whether login is required to view data

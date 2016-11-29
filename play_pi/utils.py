@@ -2,14 +2,13 @@ import logging
 
 import mpd
 from django.apps import apps
-from django.utils import cache
+from django.conf import settings
 from django.contrib.sites.models import Site
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.urlresolvers import reverse
+from django.utils import cache
 
-from django.conf import settings
 from play_pi.models import Track, RadioStation
-from play_pi.settings import MPD_PORT
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +87,7 @@ class mpd_client(object):
     """
     def __enter__(self):
         self.client = mpd.MPDClient()
-        self.client.connect(settings.MPD_ADDRESS, MPD_PORT)
+        self.client.connect(settings.MPD_ADDRESS, settings.MPD_PORT, settings.MPD_TIMEOUT)
         return self.client
 
     def __exit__(self, exc_type, exc_val, exc_tb):
