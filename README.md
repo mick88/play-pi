@@ -9,7 +9,7 @@ A frontend for a [Google Play Music](http://play.google.com/music/) Pi Jukebox. 
 * Install the required tools:
 ```bash
 sudo apt-get update
-sudo apt-get install mpd mpc python-pip screen python-dev libssl-dev python-pip python-virtualenv libffi-dev
+sudo apt-get install mpd mpc python-pip screen python-dev libssl-dev python-pip python-virtualenv libffi-dev postgresql-server-dev-9.3 postgresql-9.3
 ```
 * Test that `mpc` is working by entering the command `sudo mpc`. You should see output like 
 ```
