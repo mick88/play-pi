@@ -220,6 +220,17 @@ DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': should_show_debug_toolbar,
 }
 
+DEBUG_TOOLBAR_PANELS = [
+    'djdt_flamegraph.FlamegraphPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+]
+
 DEALER_TYPE = 'git'
 DEALER_PATH = PROJECT_PATH
 
