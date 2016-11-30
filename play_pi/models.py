@@ -125,7 +125,7 @@ class Playlist(models.Model):
 
     def get_art(self):
         artist = Artist.objects.filter(track__playlists=self).first()
-        return artist.art_url
+        return artist.art_url if artist is not None else None
 
     art_url = property(get_art)
 
