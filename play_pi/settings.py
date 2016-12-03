@@ -107,6 +107,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'dealer.contrib.django.staff.Middleware',
+    'play_pi.utils.PlayPiMiddleware',
 )
 
 ROOT_URLCONF = 'play_pi.urls'

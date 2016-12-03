@@ -7,6 +7,7 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import MultipleObjectsReturned
 from django.core.urlresolvers import reverse
 from django.utils import cache
+from django.utils.deprecation import MiddlewareMixin
 
 from play_pi.models import Track, RadioStation
 
@@ -127,3 +128,12 @@ def get_currently_playing_track():
             return {}
     except MultipleObjectsReturned:
         return {}
+
+
+class PlayPiMiddleware(MiddlewareMixin):
+    def process_response(self, request, response):
+        response['AppName'] = 'play_pi'
+        # Copy version information from Dealer middleware
+        response['AppVersion'] = request.tag
+        response['AppRevision'] = request.revision
+        return response
