@@ -27,6 +27,10 @@ class AlbumSerializer(serializers.ModelSerializer):
 class TrackSerializer(serializers.ModelSerializer):
     artist = ArtistSerializer(read_only=True)
     album = AlbumSerializer(read_only=True)
+    stream_url = serializers.SerializerMethodField()
+
+    def get_stream_url(self, obj):
+        return self.context['request'].build_absolute_uri(obj.stream_url)
 
     class Meta:
         model = Track

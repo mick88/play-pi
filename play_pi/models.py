@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.db.models import QuerySet
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from django.utils.functional import cached_property
 from sortedm2m.fields import SortedManyToManyField
 
 
@@ -99,6 +100,10 @@ class Track(BaseMpdTrack):
     last_modified = models.DateTimeField(null=True, blank=True)
 
     objects = TrackQuerySet.as_manager()
+
+    @cached_property
+    def stream_url(self):
+        return reverse('get_stream', kwargs={'track_id': self.pk})
 
     @classmethod
     def type_name(cls):
