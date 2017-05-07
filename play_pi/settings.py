@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'flat_responsive',
     'django.contrib.admin',
+    'raven.contrib.django.raven_compat',
     'bootstrap3',
     'debug_toolbar',
     'rest_framework',
@@ -224,6 +225,15 @@ DEBUG_TOOLBAR_CONFIG = {
 
 DEALER_TYPE = 'git'
 DEALER_PATH = PROJECT_PATH
+
+if 'RAVEN_DSN' in os.environ:
+    import raven
+    RAVEN_CONFIG = {
+        'dsn': os.environ.get('RAVEN_DSN'),
+        # If you are using git, you can also automatically configure the
+        # release based on the git info.
+        'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+    }
 
 try:
     from local_settings import *
