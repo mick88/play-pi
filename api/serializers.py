@@ -30,7 +30,11 @@ class TrackSerializer(serializers.ModelSerializer):
     stream_url = serializers.SerializerMethodField()
 
     def get_stream_url(self, obj):
-        return self.context['request'].build_absolute_uri(obj.stream_url)
+        if 'request' in self.context:
+            return self.context['request'].build_absolute_uri(obj.stream_url)
+        else:
+            site = Site.objects.get_current()
+            return 'http://' + site.domain + obj.stream_url
 
     class Meta:
         model = Track
