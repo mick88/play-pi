@@ -1,5 +1,6 @@
 import os
 
+import raven
 from django.urls import reverse_lazy
 from gmusicapi import Webclient
 
@@ -44,7 +45,7 @@ ALLOWED_HOSTS = ['*']
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Chicago'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -54,11 +55,11 @@ SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
-USE_I18N = False
+USE_I18N = True
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
-USE_L10N = False
+USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
@@ -85,10 +86,8 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'OPTIONS': {
             'loaders': [
-                ('django.template.loaders.cached.Loader', [
-                    'django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader',
-                ]),
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
             ],
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
@@ -107,8 +106,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'dealer.contrib.django.staff.Middleware',
-    'play_pi.utils.PlayPiMiddleware',
 )
 
 ROOT_URLCONF = 'play_pi.urls'
@@ -123,7 +120,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'flat_responsive',
     'django.contrib.admin',
     'bootstrap3',
     'debug_toolbar',
@@ -200,9 +196,7 @@ CACHES = {
 # MPD deamon settings
 MPD_ADDRESS = os.environ.get('MPD_ADDRESS', 'localhost')
 MPD_PORT = os.environ.get('MPD_PORT', '6600')
-MPD_TIMEOUT = 15
 
-LOGIN_URL = reverse_lazy('admin:login')
 # Defines whether login is required to view data
 LOGIN_REQUIRED = False
 # Defines whether login is required to control playback, queue etc
